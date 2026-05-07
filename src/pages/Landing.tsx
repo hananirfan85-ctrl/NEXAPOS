@@ -56,7 +56,7 @@ export default function Landing() {
       "thumbnailUrl": "https://img.youtube.com/vi/8paPp1OU7jc/maxresdefault.jpg",
       "uploadDate": "2026-05-07",
       "contentUrl": "https://www.youtube.com/watch?v=8paPp1OU7jc",
-      "embedUrl": "https://www.youtube.com/embed/8paPp1OU7jc"
+      "embedUrl": "https://www.youtube-nocookie.com/embed/8paPp1OU7jc"
     }
   };
 
@@ -226,7 +226,7 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* Tutorial Video Section - Added YouTube Video */}
+        {/* Tutorial Video Section - YouTube Video with Channel Info Hidden */}
         <section className="py-24 px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="max-w-6xl mx-auto">
             <motion.div 
@@ -253,7 +253,7 @@ export default function Landing() {
                 <iframe 
                   width="100%" 
                   height="100%" 
-                  src="https://www.youtube.com/embed/8paPp1OU7jc?si=XaHtNk_0BIcMmoB_" 
+                  src="https://www.youtube-nocookie.com/embed/8paPp1OU7jc?modestbranding=1&rel=0&controls=1&color=white&showinfo=0"
                   title="NEXA POS System Tutorial - Complete Software Demo" 
                   frameBorder="0" 
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
