@@ -48,7 +48,16 @@ export default function Landing() {
       "price": "0",
       "priceCurrency": "USD"
     },
-    "description": "NEXA POS is an advanced Point of Sale system designed to help businesses manage sales, billing, inventory, and customers in one powerful platform."
+    "description": "NEXA POS is an advanced Point of Sale system designed to help businesses manage sales, billing, inventory, and customers in one powerful platform.",
+    "video": {
+      "@type": "VideoObject",
+      "name": "NEXA POS Software Tutorial",
+      "description": "Complete tutorial and demo of NEXA POS System features including billing, inventory management, and reporting.",
+      "thumbnailUrl": "https://img.youtube.com/vi/8paPp1OU7jc/maxresdefault.jpg",
+      "uploadDate": "2026-05-07",
+      "contentUrl": "https://www.youtube.com/watch?v=8paPp1OU7jc",
+      "embedUrl": "https://www.youtube.com/embed/8paPp1OU7jc"
+    }
   };
 
   const faqs = [
@@ -213,6 +222,46 @@ export default function Landing() {
                   Request a Free Demo
                 </Link>
               </motion.div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Tutorial Video Section - Added YouTube Video */}
+        <section className="py-24 px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="max-w-6xl mx-auto">
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8 }}
+              className="text-center mb-12"
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Watch NEXA POS Tutorial</h2>
+              <p className="text-gray-400 font-light max-w-2xl mx-auto">
+                Complete walkthrough of NEXA POS System features including billing, inventory management, and reporting.
+              </p>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="relative rounded-2xl overflow-hidden shadow-2xl shadow-indigo-500/20 border border-white/10 bg-black/40"
+            >
+              <div className="aspect-video w-full">
+                <iframe 
+                  width="100%" 
+                  height="100%" 
+                  src="https://www.youtube.com/embed/8paPp1OU7jc?si=XaHtNk_0BIcMmoB_" 
+                  title="NEXA POS System Tutorial - Complete Software Demo" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  referrerPolicy="strict-origin-when-cross-origin" 
+                  allowFullScreen
+                  className="w-full h-full"
+                ></iframe>
+              </div>
             </motion.div>
           </div>
         </section>
