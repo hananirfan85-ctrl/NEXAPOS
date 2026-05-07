@@ -8,7 +8,7 @@ export default function Pricing() {
     {
       name: "Starter",
       description: "Perfect for single-location retail setups.",
-      price: "500 PKR",
+      price: "1k PKR",
       period: "/month",
       features: [
         "1 POS Terminal",
@@ -23,7 +23,7 @@ export default function Pricing() {
     {
       name: "Professional",
       description: "Advanced controls for growing multi-location teams.",
-      price: "3000 PKR",
+      price: "3.5k PKR",
       period: "/month",
       features: [
         "5 POS Terminals",
