@@ -4,7 +4,6 @@ import { LayoutDashboard, Package, ShoppingCart, DollarSign, BarChart3, Clock, L
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
 import toast from 'react-hot-toast';
-import { motion, AnimatePresence } from 'motion/react';
 import { usePwaInstall } from '../../hooks/usePwaInstall';
 
 const navItems = [
@@ -93,17 +92,14 @@ export function AppLayout() {
     <div className="flex h-screen bg-gradient-to-br from-indigo-50/50 via-white to-[#f5f5fa] text-gray-900 font-sans overflow-hidden">
       
       {/* Mobile Overlay */}
-      <AnimatePresence>
+      <>
         {isMobileMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={closeMobileMenu}
+          <div
+          onClick={closeMobileMenu}
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
           />
         )}
-      </AnimatePresence>
+      </>
 
       {/* Sidebar */}
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 flex flex-col transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
@@ -231,26 +227,18 @@ export function AppLayout() {
 
         {/* Page Content */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="max-w-7xl mx-auto w-full min-h-full"
+          <div className="max-w-7xl mx-auto w-full min-h-full"
           >
             <Outlet />
-          </motion.div>
+          </div>
         </div>
       </main>
 
       {/* PWA Install Modal */}
-      <AnimatePresence>
+      <>
         {showInstallModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col border border-gray-200"
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col border border-gray-200"
             >
               <div className="p-6 border-b border-gray-200 flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-3">
@@ -288,10 +276,10 @@ export function AppLayout() {
                   Got it
                 </button>
               </div>
-            </motion.div>
+            </div>
           </div>
         )}
-      </AnimatePresence>
+      </>
     </div>
   );
 }

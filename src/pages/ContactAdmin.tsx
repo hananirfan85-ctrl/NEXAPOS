@@ -1,15 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
-import { useAuth } from '../contexts/AuthContext';
-import { Send, MessageSquare, AlertCircle, CheckCircle, Clock } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { supabase } from "../lib/supabase";
+import { useAuth } from "../contexts/AuthContext";
+import {
+  Send,
+  MessageSquare,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+} from "lucide-react";
 
 export default function ContactAdmin() {
   const { user } = useAuth();
-  const [subject, setSubject] = useState('');
-  const [message, setMessage] = useState('');
+  const [subject, setSubject] = useState("");
+  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [history, setHistory] = useState<any[]>([]);
   const [historyLoading, setHistoryLoading] = useState(true);
 
@@ -23,15 +29,15 @@ export default function ContactAdmin() {
     try {
       setHistoryLoading(true);
       const { data, error } = await supabase
-        .from('user_messages')
-        .select('*')
-        .eq('user_id', user?.id)
-        .order('created_at', { ascending: false });
+        .from("user_messages")
+        .select("*")
+        .eq("user_id", user?.id)
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       setHistory(data || []);
     } catch (err: any) {
-      console.error('Error fetching message history:', err);
+      console.error("Error fetching message history:", err);
       // Suppress PGRST205 for missing table
     } finally {
       setHistoryLoading(false);
@@ -41,36 +47,43 @@ export default function ContactAdmin() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
-    
+
     setLoading(true);
-    setError('');
-    
+    setError("");
+
     try {
-      const { data, error: submitError } = await supabase.from('user_messages').insert([{
-        user_id: user.id,
-        email: user.email,
-        subject,
-        message,
-        status: 'pending'
-      }]).select().single();
-      
+      const { data, error: submitError } = await supabase
+        .from("user_messages")
+        .insert([
+          {
+            user_id: user.id,
+            email: user.email,
+            subject,
+            message,
+            status: "pending",
+          },
+        ])
+        .select()
+        .single();
+
       if (submitError) throw submitError;
-      
+
       setSuccess(true);
-      setSubject('');
-      setMessage('');
+      setSubject("");
+      setMessage("");
       if (data) {
-        setHistory(prev => [data, ...prev]);
+        setHistory((prev) => [data, ...prev]);
       }
-      
+
       setTimeout(() => setSuccess(false), 5000);
-      
     } catch (err: any) {
-      console.error('Submit error:', err);
-      if (err.code === 'PGRST205') {
-        setError('Messages table is not yet set up in the database. Please contact support.');
+      console.error("Submit error:", err);
+      if (err.code === "PGRST205") {
+        setError(
+          "Messages table is not yet set up in the database. Please contact support.",
+        );
       } else {
-        setError(err.message || 'Failed to send message. Please try again.');
+        setError(err.message || "Failed to send message. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -86,7 +99,9 @@ export default function ContactAdmin() {
           </div>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Contact Admin</h1>
-            <p className="text-sm text-gray-500">Send a direct message to the system administrator.</p>
+            <p className="text-sm text-gray-500">
+              Send a direct message to the system administrator.
+            </p>
           </div>
         </div>
 
@@ -102,11 +117,14 @@ export default function ContactAdmin() {
             <div className="inline-flex bg-green-100 text-green-600 p-3 rounded-full mb-4">
               <CheckCircle size={32} />
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-2">Message Sent Successfully!</h3>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">
+              Message Sent Successfully!
+            </h3>
             <p className="text-gray-500 max-w-sm mx-auto">
-              Your message has been securely sent to the administrator. They will review it shortly.
+              Your message has been securely sent to the administrator. They
+              will review it shortly.
             </p>
-            <button 
+            <button
               onClick={() => setSuccess(false)}
               className="mt-6 text-indigo-600 font-medium hover:text-indigo-700"
             >
@@ -165,30 +183,41 @@ export default function ContactAdmin() {
 
       {history.length > 0 && (
         <div className="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Message History</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-6">
+            Message History
+          </h2>
           <div className="space-y-6">
             {history.map((msg) => (
-              <div key={msg.id} className="border border-gray-100 rounded-xl p-5 bg-gray-50/50">
+              <div
+                key={msg.id}
+                className="border border-gray-100 rounded-xl p-5 bg-gray-50/50"
+              >
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h3 className="font-semibold text-gray-900">{msg.subject}</h3>
+                    <h3 className="font-semibold text-gray-900">
+                      {msg.subject}
+                    </h3>
                     <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
                       <Clock size={14} />
                       {new Date(msg.created_at).toLocaleString()}
                     </div>
                   </div>
-                  <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${
-                    msg.status === 'resolved' ? 'bg-green-100 text-green-700' :
-                    msg.status === 'in_progress' ? 'bg-amber-100 text-amber-700' :
-                    'bg-gray-200 text-gray-700'
-                  }`}>
-                    {msg.status.replace('_', ' ').toUpperCase()}
+                  <span
+                    className={`px-2.5 py-1 text-xs font-semibold rounded-full ${
+                      msg.status === "resolved"
+                        ? "bg-green-100 text-green-700"
+                        : msg.status === "in_progress"
+                          ? "bg-amber-100 text-amber-700"
+                          : "bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    {msg.status.replace("_", " ").toUpperCase()}
                   </span>
                 </div>
                 <div className="text-sm text-gray-700 mb-4 whitespace-pre-wrap bg-white p-3 rounded-lg border border-gray-100">
                   {msg.message}
                 </div>
-                
+
                 {msg.reply && (
                   <div className="mt-4 bg-indigo-50 border border-indigo-100 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-2 text-indigo-700 font-semibold text-sm">

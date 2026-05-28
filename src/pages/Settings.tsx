@@ -1,31 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { Save, Store, MapPin, AlignCenter } from 'lucide-react';
-import { motion } from 'motion/react';
+import React, { useState, useEffect } from "react";
+import { Save, Store, MapPin, AlignCenter } from "lucide-react";
 
 export default function Settings() {
-  const [businessName, setBusinessName] = useState('');
-  const [address, setAddress] = useState('');
-  const [footerMessage, setFooterMessage] = useState('');
+  const [businessName, setBusinessName] = useState("");
+  const [address, setAddress] = useState("");
+  const [footerMessage, setFooterMessage] = useState("");
   const [showSaved, setShowSaved] = useState(false);
 
   useEffect(() => {
-    const savedName = localStorage.getItem('nexapos_business_name');
-    const savedAddress = localStorage.getItem('nexapos_address');
-    const savedFooter = localStorage.getItem('nexapos_footer');
+    const savedName = localStorage.getItem("nexapos_business_name");
+    const savedAddress = localStorage.getItem("nexapos_address");
+    const savedFooter = localStorage.getItem("nexapos_footer");
 
     if (savedName) setBusinessName(savedName);
-    else setBusinessName('NEXA POS POS');
+    else setBusinessName("NEXA POS POS");
 
     if (savedAddress) setAddress(savedAddress);
     if (savedFooter) setFooterMessage(savedFooter);
-    else setFooterMessage('Thank you for shopping with us!');
+    else setFooterMessage("Thank you for shopping with us!");
   }, []);
 
   const handleSave = () => {
-    localStorage.setItem('nexapos_business_name', businessName);
-    localStorage.setItem('nexapos_address', address);
-    localStorage.setItem('nexapos_footer', footerMessage);
-    
+    localStorage.setItem("nexapos_business_name", businessName);
+    localStorage.setItem("nexapos_address", address);
+    localStorage.setItem("nexapos_footer", footerMessage);
+
     setShowSaved(true);
     setTimeout(() => setShowSaved(false), 3000);
   };
@@ -38,8 +37,12 @@ export default function Settings() {
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-6 border-b border-gray-100 bg-gray-50/50">
-          <h2 className="text-lg font-semibold text-gray-900">Receipt Template Settings</h2>
-          <p className="text-sm text-gray-500 mt-1">Customize the receipt printed for your customers.</p>
+          <h2 className="text-lg font-semibold text-gray-900">
+            Receipt Template Settings
+          </h2>
+          <p className="text-sm text-gray-500 mt-1">
+            Customize the receipt printed for your customers.
+          </p>
         </div>
 
         <div className="p-6 space-y-6">
@@ -98,7 +101,7 @@ export default function Settings() {
                   />
                 </div>
               </div>
-              
+
               <div className="pt-4">
                 <button
                   onClick={handleSave}
@@ -108,13 +111,9 @@ export default function Settings() {
                   Save Settings
                 </button>
                 {showSaved && (
-                  <motion.p
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-sm font-medium text-emerald-600 mt-3"
-                  >
+                  <p className="text-sm font-medium text-emerald-600 mt-3">
                     Settings saved successfully!
-                  </motion.p>
+                  </p>
                 )}
               </div>
             </div>
@@ -123,10 +122,14 @@ export default function Settings() {
             <div className="bg-gray-100 rounded-xl p-6 flex items-center justify-center border border-gray-200">
               <div className="bg-white p-6 shadow-sm border border-gray-200 w-full max-w-sm rounded font-mono text-sm">
                 <div className="text-center space-y-1 mb-6">
-                  <h3 className="font-bold text-lg">{businessName || 'Business Name'}</h3>
-                  <p className="text-gray-500 text-xs whitespace-pre-wrap">{address || '123 Business Address\nCity, State'}</p>
+                  <h3 className="font-bold text-lg">
+                    {businessName || "Business Name"}
+                  </h3>
+                  <p className="text-gray-500 text-xs whitespace-pre-wrap">
+                    {address || "123 Business Address\nCity, State"}
+                  </p>
                 </div>
-                
+
                 <div className="border-t border-b border-dashed border-gray-300 py-3 my-3">
                   <div className="flex justify-between text-xs text-gray-500 mb-2">
                     <span>1x Item Name</span>
@@ -139,11 +142,10 @@ export default function Settings() {
                 </div>
 
                 <div className="text-center mt-6 text-xs text-gray-500 whitespace-pre-wrap">
-                  {footerMessage || 'Thank you for your business!'}
+                  {footerMessage || "Thank you for your business!"}
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>

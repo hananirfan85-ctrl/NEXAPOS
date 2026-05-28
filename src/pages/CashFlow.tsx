@@ -1,13 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
-import { useAuth } from '../contexts/AuthContext';
-import { Plus, ArrowDownCircle, ArrowUpCircle, Wallet, Trash2 } from 'lucide-react';
-import toast from 'react-hot-toast';
+import React, { useState, useEffect } from "react";
+import { supabase } from "../lib/supabase";
+import { useAuth } from "../contexts/AuthContext";
+import {
+  Plus,
+  ArrowDownCircle,
+  ArrowUpCircle,
+  Wallet,
+  Trash2,
+} from "lucide-react";
+import toast from "react-hot-toast";
 
 interface CashFlow {
   id: string;
   date: string;
-  type: 'income' | 'expense';
+  type: "income" | "expense";
   amount: number;
   description: string;
 }
@@ -19,10 +25,10 @@ export default function CashFlows() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Form State
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [type, setType] = useState<'income' | 'expense'>('income');
-  const [amount, setAmount] = useState('');
-  const [description, setDescription] = useState('');
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [type, setType] = useState<"income" | "expense">("income");
+  const [amount, setAmount] = useState("");
+  const [description, setDescription] = useState("");
 
   useEffect(() => {
     if (user) fetchCashFlows();
@@ -31,18 +37,22 @@ export default function CashFlows() {
   const fetchCashFlows = async () => {
     try {
       const { data, error } = await supabase
-        .from('cash_flows')
-        .select('*')
-        .order('date', { ascending: false });
+        .from("cash_flows")
+        .select("*")
+        .order("date", { ascending: false });
 
       if (error) throw error;
       setCashFlows(data || []);
     } catch (error: any) {
-      console.error('Error fetching cash flows:', error);
-      if (error.code === 'PGRST205') {
-        toast.error('Cash Flow table is missing. Please run the SQL schema in your Supabase dashboard.');
+      console.error("Error fetching cash flows:", error);
+      if (error.code === "PGRST205") {
+        toast.error(
+          "Cash Flow table is missing. Please run the SQL schema in your Supabase dashboard.",
+        );
       } else {
-        toast.error('Failed to load cash flows. You may be viewing offline data.');
+        toast.error(
+          "Failed to load cash flows. You may be viewing offline data.",
+        );
       }
     } finally {
       setLoading(false);
@@ -53,50 +63,66 @@ export default function CashFlows() {
     e.preventDefault();
     if (!user) return;
     if (!amount || Number(amount) <= 0) {
-      toast.error('Please enter a valid amount');
+      toast.error("Please enter a valid amount");
       return;
     }
 
     try {
-      const { data, error } = await supabase.from('cash_flows').insert([{
-        user_id: user.id,
-        date,
-        type,
-        amount: Number(amount),
-        description
-      }]).select().single();
+      const { data, error } = await supabase
+        .from("cash_flows")
+        .insert([
+          {
+            user_id: user.id,
+            date,
+            type,
+            amount: Number(amount),
+            description,
+          },
+        ])
+        .select()
+        .single();
 
       if (error) throw error;
-      toast.success('Record added successfully');
-      setCashFlows(prev => [data, ...prev].sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+      toast.success("Record added successfully");
+      setCashFlows((prev) =>
+        [data, ...prev].sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+        ),
+      );
       setIsModalOpen(false);
-      setAmount('');
-      setDescription('');
+      setAmount("");
+      setDescription("");
     } catch (error: any) {
-      console.error('Error adding record:', error);
-      if (error.code === 'PGRST205') {
-        toast.error('Table missing. Please run the SQL schema in Supabase directly.');
+      console.error("Error adding record:", error);
+      if (error.code === "PGRST205") {
+        toast.error(
+          "Table missing. Please run the SQL schema in Supabase directly.",
+        );
       } else {
-        toast.error('Failed to add record');
+        toast.error("Failed to add record");
       }
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this record?')) return;
+    if (!confirm("Are you sure you want to delete this record?")) return;
     try {
-      const { error } = await supabase.from('cash_flows').delete().eq('id', id);
+      const { error } = await supabase.from("cash_flows").delete().eq("id", id);
       if (error) throw error;
-      toast.success('Record deleted');
-      setCashFlows(prev => prev.filter(cf => cf.id !== id));
+      toast.success("Record deleted");
+      setCashFlows((prev) => prev.filter((cf) => cf.id !== id));
     } catch (error) {
-      console.error('Error deleting record:', error);
-      toast.error('Failed to delete record');
+      console.error("Error deleting record:", error);
+      toast.error("Failed to delete record");
     }
   };
 
-  const totalIncome = cashFlows.filter(cf => cf.type === 'income').reduce((sum, cf) => sum + Number(cf.amount), 0);
-  const totalExpense = cashFlows.filter(cf => cf.type === 'expense').reduce((sum, cf) => sum + Number(cf.amount), 0);
+  const totalIncome = cashFlows
+    .filter((cf) => cf.type === "income")
+    .reduce((sum, cf) => sum + Number(cf.amount), 0);
+  const totalExpense = cashFlows
+    .filter((cf) => cf.type === "expense")
+    .reduce((sum, cf) => sum + Number(cf.amount), 0);
   const netBalance = totalIncome - totalExpense;
 
   return (
@@ -104,7 +130,9 @@ export default function CashFlows() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Cash Flow</h1>
-          <p className="text-gray-600 mt-1">Track your business income and expenses</p>
+          <p className="text-gray-600 mt-1">
+            Track your business income and expenses
+          </p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
@@ -118,8 +146,12 @@ export default function CashFlows() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-500 mb-1">Total Income</p>
-            <p className="text-2xl font-bold text-green-600">PKR {totalIncome.toFixed(2)}</p>
+            <p className="text-sm font-medium text-gray-500 mb-1">
+              Total Income
+            </p>
+            <p className="text-2xl font-bold text-green-600">
+              PKR {totalIncome.toFixed(2)}
+            </p>
           </div>
           <div className="p-3 bg-green-50 rounded-full">
             <ArrowDownCircle className="w-6 h-6 text-green-600" />
@@ -128,8 +160,12 @@ export default function CashFlows() {
 
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-500 mb-1">Total Expenses</p>
-            <p className="text-2xl font-bold text-red-600">PKR {totalExpense.toFixed(2)}</p>
+            <p className="text-sm font-medium text-gray-500 mb-1">
+              Total Expenses
+            </p>
+            <p className="text-2xl font-bold text-red-600">
+              PKR {totalExpense.toFixed(2)}
+            </p>
           </div>
           <div className="p-3 bg-red-50 rounded-full">
             <ArrowUpCircle className="w-6 h-6 text-red-600" />
@@ -138,20 +174,30 @@ export default function CashFlows() {
 
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-500 mb-1">Net Balance</p>
-            <p className={`text-2xl font-bold ${netBalance >= 0 ? 'text-indigo-600' : 'text-red-600'}`}>
+            <p className="text-sm font-medium text-gray-500 mb-1">
+              Net Balance
+            </p>
+            <p
+              className={`text-2xl font-bold ${netBalance >= 0 ? "text-indigo-600" : "text-red-600"}`}
+            >
               PKR {netBalance.toFixed(2)}
             </p>
           </div>
-          <div className={`p-3 rounded-full ${netBalance >= 0 ? 'bg-indigo-50' : 'bg-red-50'}`}>
-            <Wallet className={`w-6 h-6 ${netBalance >= 0 ? 'text-indigo-600' : 'text-red-600'}`} />
+          <div
+            className={`p-3 rounded-full ${netBalance >= 0 ? "bg-indigo-50" : "bg-red-50"}`}
+          >
+            <Wallet
+              className={`w-6 h-6 ${netBalance >= 0 ? "text-indigo-600" : "text-red-600"}`}
+            />
           </div>
         </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
         <div className="p-6 border-b border-gray-100">
-          <h2 className="text-lg font-semibold text-gray-800">Transaction History</h2>
+          <h2 className="text-lg font-semibold text-gray-800">
+            Transaction History
+          </h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-gray-500">
@@ -167,29 +213,45 @@ export default function CashFlows() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-4 text-center">Loading...</td>
+                  <td colSpan={5} className="px-6 py-4 text-center">
+                    Loading...
+                  </td>
                 </tr>
               ) : cashFlows.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-4 text-center">No records found.</td>
+                  <td colSpan={5} className="px-6 py-4 text-center">
+                    No records found.
+                  </td>
                 </tr>
               ) : (
                 cashFlows.map((cf) => (
-                  <tr key={cf.id} className="border-b border-gray-50 hover:bg-gray-50">
-                    <td className="px-6 py-4 font-medium text-gray-900">{new Date(cf.date).toLocaleDateString()}</td>
+                  <tr
+                    key={cf.id}
+                    className="border-b border-gray-50 hover:bg-gray-50"
+                  >
+                    <td className="px-6 py-4 font-medium text-gray-900">
+                      {new Date(cf.date).toLocaleDateString()}
+                    </td>
                     <td className="px-6 py-4">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${
-                        cf.type === 'income' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                      }`}>
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${
+                          cf.type === "income"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
                         {cf.type}
                       </span>
                     </td>
-                    <td className="px-6 py-4">{cf.description || '-'}</td>
-                    <td className={`px-6 py-4 font-bold ${cf.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
-                      {cf.type === 'income' ? '+' : '-'} PKR {Number(cf.amount).toFixed(2)}
+                    <td className="px-6 py-4">{cf.description || "-"}</td>
+                    <td
+                      className={`px-6 py-4 font-bold ${cf.type === "income" ? "text-green-600" : "text-red-600"}`}
+                    >
+                      {cf.type === "income" ? "+" : "-"} PKR{" "}
+                      {Number(cf.amount).toFixed(2)}
                     </td>
                     <td className="px-6 py-4">
-                      <button 
+                      <button
                         onClick={() => handleDelete(cf.id)}
                         className="text-red-500 hover:text-red-700"
                         title="Delete Record"
@@ -208,38 +270,44 @@ export default function CashFlows() {
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Add Cash Flow Record</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              Add Cash Flow Record
+            </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Type
+                </label>
                 <div className="grid grid-cols-2 gap-4">
                   <button
                     type="button"
-                    onClick={() => setType('income')}
+                    onClick={() => setType("income")}
                     className={`py-2 px-4 rounded-md border text-sm font-medium ${
-                      type === 'income' 
-                        ? 'bg-green-50 border-green-200 text-green-700' 
-                        : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                      type === "income"
+                        ? "bg-green-50 border-green-200 text-green-700"
+                        : "border-gray-300 text-gray-700 hover:bg-gray-50"
                     }`}
                   >
                     Income
                   </button>
                   <button
                     type="button"
-                    onClick={() => setType('expense')}
+                    onClick={() => setType("expense")}
                     className={`py-2 px-4 rounded-md border text-sm font-medium ${
-                      type === 'expense' 
-                        ? 'bg-red-50 border-red-200 text-red-700' 
-                        : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                      type === "expense"
+                        ? "bg-red-50 border-red-200 text-red-700"
+                        : "border-gray-300 text-gray-700 hover:bg-gray-50"
                     }`}
                   >
                     Expense
                   </button>
                 </div>
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Date
+                </label>
                 <input
                   type="date"
                   required
@@ -250,7 +318,9 @@ export default function CashFlows() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Amount (PKR)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Amount (PKR)
+                </label>
                 <input
                   type="number"
                   step="0.01"
@@ -264,7 +334,9 @@ export default function CashFlows() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description (Optional)
+                </label>
                 <input
                   type="text"
                   value={description}

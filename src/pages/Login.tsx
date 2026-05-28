@@ -1,78 +1,93 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
-import { motion } from 'motion/react';
-import { ArrowLeft, Hexagon } from 'lucide-react';
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+import { ArrowLeft, Hexagon } from "lucide-react";
 
 export default function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [captchaQ, setCaptchaQ] = useState({ a: 0, b: 0 });
-  const [captchaA, setCaptchaA] = useState('');
+  const [captchaA, setCaptchaA] = useState("");
   const [loginAttempts, setLoginAttempts] = useState(0);
   const [lockedOutUntil, setLockedOutUntil] = useState<number | null>(null);
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    setCaptchaQ({ a: Math.floor(Math.random() * 10) + 1, b: Math.floor(Math.random() * 10) + 1 });
+    setCaptchaQ({
+      a: Math.floor(Math.random() * 10) + 1,
+      b: Math.floor(Math.random() * 10) + 1,
+    });
   }, []);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Client-side Rate Limiting Check
     if (lockedOutUntil && Date.now() < lockedOutUntil) {
       const secondsLeft = Math.ceil((lockedOutUntil - Date.now()) / 1000);
-      setError(`Too many login attempts. Please try again in ${secondsLeft} seconds.`);
+      setError(
+        `Too many login attempts. Please try again in ${secondsLeft} seconds.`,
+      );
       return;
     }
 
     if (!termsAccepted) {
-      setError('You must accept the terms and conditions to login.');
+      setError("You must accept the terms and conditions to login.");
       return;
     }
-    
+
     // Strict Input Validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setError('Security Error: Invalid email format detected.');
+      setError("Security Error: Invalid email format detected.");
       return;
     }
 
     if (password.length < 6) {
-      setError('Security Error: Password does not meet minimum length requirements.');
+      setError(
+        "Security Error: Password does not meet minimum length requirements.",
+      );
       return;
     }
     if (parseInt(captchaA) !== captchaQ.a + captchaQ.b) {
-      setError('Incorrect CAPTCHA calculation. Please try again.');
-      setCaptchaQ({ a: Math.floor(Math.random() * 10) + 1, b: Math.floor(Math.random() * 10) + 1 });
-      setCaptchaA('');
+      setError("Incorrect CAPTCHA calculation. Please try again.");
+      setCaptchaQ({
+        a: Math.floor(Math.random() * 10) + 1,
+        b: Math.floor(Math.random() * 10) + 1,
+      });
+      setCaptchaA("");
       return;
     }
     setLoading(true);
-    setError('');
+    setError("");
 
     // --- DEBUGGING HELP ---
-    if (email === 'debug@nexapos.com') {
-       const url = import.meta.env.VITE_SUPABASE_URL || 'MISSING';
-       const key = import.meta.env.VITE_SUPABASE_ANON_KEY || 'MISSING';
-       setError(`DEBUG MODE:\nURL Length: ${url.length}\nURL Starts With: ${url.substring(0, 10)}...\nKey Length: ${key.length}\nKey Starts With: ${key.substring(0, 10)}...`);
-       setLoading(false);
-       return;
-    }
-    // -----------------------
-
-    const rawUrl = import.meta.env.VITE_SUPABASE_URL || '';
-    if (!rawUrl || rawUrl.includes('YOUR_SUPABASE_URL')) {
-      setError('Missing Supabase Config: Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your Vercel Environment Variables.');
+    if (email === "debug@nexapos.com") {
+      const url = import.meta.env.VITE_SUPABASE_URL || "MISSING";
+      const key = import.meta.env.VITE_SUPABASE_ANON_KEY || "MISSING";
+      setError(
+        `DEBUG MODE:\nURL Length: ${url.length}\nURL Starts With: ${url.substring(0, 10)}...\nKey Length: ${key.length}\nKey Starts With: ${key.substring(0, 10)}...`,
+      );
       setLoading(false);
       return;
     }
-    if (!rawUrl.startsWith('https://')) {
-      setError('Invalid Config: Your VITE_SUPABASE_URL must start exactly with "https://". Please update it in Vercel and redeploy.');
+    // -----------------------
+
+    const rawUrl = import.meta.env.VITE_SUPABASE_URL || "";
+    if (!rawUrl || rawUrl.includes("YOUR_SUPABASE_URL")) {
+      setError(
+        "Missing Supabase Config: Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your Vercel Environment Variables.",
+      );
+      setLoading(false);
+      return;
+    }
+    if (!rawUrl.startsWith("https://")) {
+      setError(
+        'Invalid Config: Your VITE_SUPABASE_URL must start exactly with "https://". Please update it in Vercel and redeploy.',
+      );
       setLoading(false);
       return;
     }
@@ -89,18 +104,25 @@ export default function Login() {
         setLoginAttempts(newAttempts);
         if (newAttempts >= 5) {
           setLockedOutUntil(Date.now() + 60000); // 1 minute lockout
-          setError('Rate limit exceeded. System locked for 60 seconds.');
+          setError("Rate limit exceeded. System locked for 60 seconds.");
         }
       } else {
-        navigate('/');
+        navigate("/");
       }
     } catch (err: any) {
-      if (err?.message === 'Failed to fetch') {
-        setError('Network Error (Failed to fetch). This usually means 1 of 3 things:\n1. Your Supabase project URL has a typo.\n2. Your Supabase project was PAUSED due to inactivity (log into Supabase to unpause it).\n3. Your Vercel environment variables are misconfigured. Double-check them and Redeploy.');
-      } else if (err?.message?.toLowerCase().includes('api key')) {
-        setError('Invalid API Key: The VITE_SUPABASE_ANON_KEY in Vercel is incorrect. Go to Supabase -> Project Settings -> API, copy the "anon public" key, update it in Vercel, and click Redeploy.');
+      if (err?.message === "Failed to fetch") {
+        setError(
+          "Network Error (Failed to fetch). This usually means 1 of 3 things:\n1. Your Supabase project URL has a typo.\n2. Your Supabase project was PAUSED due to inactivity (log into Supabase to unpause it).\n3. Your Vercel environment variables are misconfigured. Double-check them and Redeploy.",
+        );
+      } else if (err?.message?.toLowerCase().includes("api key")) {
+        setError(
+          'Invalid API Key: The VITE_SUPABASE_ANON_KEY in Vercel is incorrect. Go to Supabase -> Project Settings -> API, copy the "anon public" key, update it in Vercel, and click Redeploy.',
+        );
       } else {
-        setError(err?.message || 'A network error occurred. Check your Supabase configuration.');
+        setError(
+          err?.message ||
+            "A network error occurred. Check your Supabase configuration.",
+        );
       }
     } finally {
       setLoading(false);
@@ -109,40 +131,43 @@ export default function Login() {
 
   return (
     <div className="relative min-h-screen font-sans selection:bg-indigo-500/30 selection:text-white overflow-hidden flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      
       {/* Modern Refined Animated Background */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden flex items-center justify-center">
-        <motion.div 
-          className="absolute inset-0 bg-gradient-to-br from-[#0a0a0c] via-[#0f111a] to-[#0a0a0c]"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-        />
-        <motion.div 
-          className="absolute w-[60vw] h-[60vw] rounded-full blur-[120px] bg-indigo-600/10 mix-blend-screen"
-          animate={{ x: [-100, 100, -100], y: [-50, 50, -50] }}
-          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0a0a0c] via-[#0f111a] to-[#0a0a0c]" />
+        <div className="absolute w-[60vw] h-[60vw] rounded-full blur-[120px] bg-indigo-600/10 mix-blend-screen" />
       </div>
 
       <div className="relative z-10 w-full max-w-md">
-        <Link to="/home" className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 font-medium mb-8 transition-colors group">
-          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+        <Link
+          to="/home"
+          className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 font-medium mb-8 transition-colors group"
+        >
+          <ArrowLeft
+            size={16}
+            className="group-hover:-translate-x-1 transition-transform"
+          />
           Back to Home
         </Link>
         <div className="bg-black/40 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white/10 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 translate-y-0" />
-          
+
           <div>
             <div className="flex justify-center mb-6">
-              <img src="/logo.png" alt="NEXA POS Logo" className="h-12 w-auto drop-shadow-md bg-white p-1 rounded-xl" />
+              <img
+                src="/logo.png"
+                alt="NEXA POS Logo"
+                className="h-12 w-auto drop-shadow-md bg-white p-1 rounded-xl"
+              />
             </div>
             <h2 className="text-center text-3xl font-display font-bold text-white tracking-tight">
               Sign in to NEXA POS
             </h2>
             <p className="mt-3 text-center text-sm font-sans font-light text-gray-400">
-              Or{' '}
-              <Link to="/signup" className="font-medium text-indigo-400 hover:text-indigo-300">
+              Or{" "}
+              <Link
+                to="/signup"
+                className="font-medium text-indigo-400 hover:text-indigo-300"
+              >
                 create a new account
               </Link>
             </p>
@@ -150,12 +175,16 @@ export default function Login() {
           <form className="mt-8 space-y-6" onSubmit={handleLogin}>
             {error && (
               <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-xl">
-                <p className="text-sm font-sans font-light text-red-400">{error}</p>
+                <p className="text-sm font-sans font-light text-red-400">
+                  {error}
+                </p>
               </div>
             )}
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-sans font-medium text-gray-300 mb-2 tracking-wide">Email Address</label>
+                <label className="block text-sm font-sans font-medium text-gray-300 mb-2 tracking-wide">
+                  Email Address
+                </label>
                 <input
                   type="email"
                   required
@@ -166,7 +195,9 @@ export default function Login() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-sans font-medium text-gray-300 mb-2 tracking-wide">Password</label>
+                <label className="block text-sm font-sans font-medium text-gray-300 mb-2 tracking-wide">
+                  Password
+                </label>
                 <input
                   type="password"
                   required
@@ -204,7 +235,20 @@ export default function Login() {
                 </div>
                 <div className="ml-3 text-sm">
                   <label htmlFor="terms" className="font-light text-gray-400">
-                    I agree to the <Link to="/terms" className="font-medium text-indigo-400 hover:text-indigo-300">Terms of Service</Link> and <Link to="/privacy-policy" className="font-medium text-indigo-400 hover:text-indigo-300">Privacy Policy</Link>
+                    I agree to the{" "}
+                    <Link
+                      to="/terms"
+                      className="font-medium text-indigo-400 hover:text-indigo-300"
+                    >
+                      Terms of Service
+                    </Link>{" "}
+                    and{" "}
+                    <Link
+                      to="/privacy-policy"
+                      className="font-medium text-indigo-400 hover:text-indigo-300"
+                    >
+                      Privacy Policy
+                    </Link>
                   </label>
                 </div>
               </div>
@@ -216,7 +260,7 @@ export default function Login() {
                 disabled={loading}
                 className="w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-lg text-sm font-mono tracking-widest font-bold text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 focus:ring-offset-black disabled:opacity-50 transition-all uppercase hover:scale-[1.02]"
               >
-                {loading ? 'Authenticating...' : 'Secure Login'}
+                {loading ? "Authenticating..." : "Secure Login"}
               </button>
             </div>
           </form>
