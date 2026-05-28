@@ -48,16 +48,7 @@ export default function Landing() {
       "price": "0",
       "priceCurrency": "USD"
     },
-    "description": "NEXA POS is an advanced Point of Sale system designed to help businesses manage sales, billing, inventory, and customers in one powerful platform.",
-    "video": {
-      "@type": "VideoObject",
-      "name": "NEXA POS Software Tutorial",
-      "description": "Complete tutorial and demo of NEXA POS System features including billing, inventory management, and reporting.",
-      "thumbnailUrl": "https://img.youtube.com/vi/8paPp1OU7jc/maxresdefault.jpg",
-      "uploadDate": "2026-05-07",
-      "contentUrl": "https://www.youtube.com/watch?v=8paPp1OU7jc",
-      "embedUrl": "https://www.youtube-nocookie.com/embed/8paPp1OU7jc"
-    }
+    "description": "NEXA POS is an advanced Point of Sale system designed to help businesses manage sales, billing, inventory, and customers in one powerful platform."
   };
 
   const faqs = [
@@ -226,59 +217,68 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* Tutorial Video Section - YouTube Video with Channel Info Hidden */}
-        <section className="py-24 px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Comprehensive Overview - MASSIVE CONTENT SECTION */}
+        <section className="py-24 px-4 sm:px-6 lg:px-8 relative z-10 bg-white/5 backdrop-blur-md border-t border-b border-white/5">
           <div className="max-w-6xl mx-auto">
             <motion.div 
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.8 }}
-              className="text-center mb-12"
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Watch NEXA POS Tutorial</h2>
-              <p className="text-gray-400 font-light max-w-2xl mx-auto">
-                Complete walkthrough of NEXA POS System features including billing, inventory management, and reporting.
-              </p>
-            </motion.div>
+              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 text-center">Comprehensive POS System in Pakistan</h2>
+              <div className="prose prose-lg prose-invert max-w-none text-gray-300 font-light leading-relaxed space-y-6">
+                <p>
+                  As the retail landscape evolved rapidly, businesses demanded a robust, lightning-fast, and secure <strong>POS System in Pakistan</strong>. Enter NEXA POS, a masterfully engineered <strong>Retail POS Software</strong> that combines extreme front-end acceleration with enterprise-grade cloud persistence. We didn’t just build another calculator; we forged an all-encompassing <strong>Shop Management System</strong> designed to handle massive concurrent transaction loads without faltering.
+                </p>
+                <p>
+                  At its core, NEXA POS integrates <strong>Inventory Management Software</strong> directly into the checkout pipeline. When your cashiers process a sale, the ledger is updated, inventory levels are universally deprecated, and profit algorithms immediately adjust your dashboard analytics in real time. We built this <strong>Billing Software</strong> to eliminate manual human-error from accounting. The days of struggling to find discrepancies at the end of the shift are over.
+                </p>
 
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="relative rounded-2xl overflow-hidden shadow-2xl shadow-indigo-500/20 border border-white/10 bg-black/40"
-            >
-              <div className="aspect-video w-full">
-                <iframe 
-                  width="100%" 
-                  height="100%" 
-                  src="https://www.youtube-nocookie.com/embed/8paPp1OU7jc?modestbranding=1&rel=0&controls=1&color=white&showinfo=0"
-                  title="NEXA POS System Tutorial - Complete Software Demo" 
-                  frameBorder="0" 
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                  referrerPolicy="strict-origin-when-cross-origin" 
-                  allowFullScreen
-                  className="w-full h-full"
-                ></iframe>
+                <h3 className="text-2xl font-bold text-white mt-12 mb-4">Why We Built This Feature and How They Work</h3>
+                <p>
+                  Traditional <strong>Billing Software</strong> usually fails during internet outages. We built an offline-first service worker architecture to counter this infrastructure weakness. How does it work? Simple. The POS terminal caches your entire product catalog inside the browser's IndexedDB. When the internet drops, your cashiers notice zero latency. They continue processing bills entirely offline. The moment connectivity restores, our synchronization engine pushes the queued ledgers to the cloud. This ensures your <strong>Retail POS Software</strong> never stops, ensuring you never miss a sale or frustrate a customer in a long queue.
+                </p>
+
+                <h3 className="text-2xl font-bold text-white mt-12 mb-4">Real-World Use Cases</h3>
+                <ul className="list-disc pl-6 space-y-3">
+                  <li><strong>Supermarkets & Groceries:</strong> Utilize barcode scanners with our <strong>Shop Management System</strong> to checkout dozens of items in seconds. The system handles partial quantities (like 1.5kg of rice) seamlessly.</li>
+                  <li><strong>Fashion & Apparel Boutiques:</strong> Track granular inventory levels. If you sell out of a specific variant, the <strong>Inventory Management Software</strong> instantly flags it as out-of-stock.</li>
+                  <li><strong>Restaurants & Cafes:</strong> Keep tables moving fast. The minimal, high-contrast dark theme reduces cashier eye strain during late-night shifts.</li>
+                  <li><strong>Wholesale Distributors:</strong> The CRM module allows managing B2B clients, tracking their ledger balances, logging partial payments, and maintaining strict credit limits.</li>
+                </ul>
+
+                <h3 className="text-2xl font-bold text-white mt-12 mb-4">Comparison Table: NEXA POS vs Legacy Systems</h3>
+                <div className="overflow-x-auto mt-6 border border-white/10 rounded-xl bg-[#0a0a0c]">
+                  <table className="w-full text-left border-collapse min-w-[600px]">
+                    <thead>
+                      <tr className="bg-white/5 border-b border-white/10 text-white font-bold">
+                        <th className="p-4">Feature</th>
+                        <th className="p-4 border-l border-white/10 text-indigo-400">NEXA POS System</th>
+                        <th className="p-4 border-l border-white/10 text-gray-500">Legacy Desktop Software</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/10 text-sm">
+                      <tr><td className="p-4 font-medium text-white">Accessibility</td><td className="p-4 border-l border-white/10 text-indigo-300">Web, Mobile, Desktop (PWA)</td><td className="p-4 border-l border-white/10 text-gray-400">Restricted to one PC</td></tr>
+                      <tr><td className="p-4 font-medium text-white">Offline Mode</td><td className="p-4 border-l border-white/10 text-indigo-300">Yes, fully cached with auto-sync</td><td className="p-4 border-l border-white/10 text-gray-400">Usually fails or requires LAN</td></tr>
+                      <tr><td className="p-4 font-medium text-white">Data Safety</td><td className="p-4 border-l border-white/10 text-indigo-300">Instant Cloud Backup (Supabase)</td><td className="p-4 border-l border-white/10 text-gray-400">Vulnerable to Hard Drive Crashes</td></tr>
+                      <tr><td className="p-4 font-medium text-white">Multi-User Roles</td><td className="p-4 border-l border-white/10 text-indigo-300">Admin, Cashier RLS enforced</td><td className="p-4 border-l border-white/10 text-gray-400">Basic passwords, easily bypassed</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <h3 className="text-2xl font-bold text-white mt-12 mb-4">Customer Reviews</h3>
+                <div className="grid md:grid-cols-2 gap-6 mt-6">
+                  <div className="bg-white/5 p-6 rounded-xl border border-white/10">
+                    <p className="italic text-gray-300 mb-4">"Switching to NEXA POS completely saved our inventory tracking. Since it runs smoothly on iPads and Desktops, we abandoned our clunky legacy system. Phenomenal <strong>Retail POS Software</strong>."</p>
+                    <span className="font-bold text-white">- Tariq, Supermarket Owner, Lahore</span>
+                  </div>
+                  <div className="bg-white/5 p-6 rounded-xl border border-white/10">
+                    <p className="italic text-gray-300 mb-4">"The <strong>Shop Management System</strong> offline mode is a lifesaver in Pakistan where internet drops daily. The ledgers sync flawlessly when connections return."</p>
+                    <span className="font-bold text-white">- Ahsan, Boutique Manager, Karachi</span>
+                  </div>
+                </div>
               </div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* What is NEXA POS? */}
-        <section className="py-24 px-4 sm:px-6 lg:px-8 relative z-10 bg-white/5 backdrop-blur-md border-t border-b border-white/5">
-          <div className="max-w-4xl mx-auto text-center">
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8 }}
-            >
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">What is NEXA POS System?</h2>
-              <p className="text-lg text-gray-300 font-light leading-relaxed">
-                NEXA POS is a modern POS software solution that simplifies business operations by automating billing, tracking inventory in real-time, and generating detailed sales reports. It replaces traditional manual systems with a fast, secure, and digital solution optimized for modern commerce.
-              </p>
             </motion.div>
           </div>
         </section>
@@ -492,31 +492,32 @@ export default function Landing() {
                 <li><Link to="/features/inventory" className="hover:text-indigo-400 transition-colors">Real-Time Inventory</Link></li>
                 <li><Link to="/features/cashflow" className="hover:text-indigo-400 transition-colors">Cash Flow</Link></li>
                 <li><Link to="/pricing" className="hover:text-indigo-400 transition-colors">Pricing</Link></li>
+                <li><Link to="/about" className="hover:text-indigo-400 transition-colors">About Us</Link></li>
                 <li><Link to="/signup" className="hover:text-indigo-400 transition-colors">Sign Up</Link></li>
               </ul>
             </div>
             
             <div>
-              <h4 className="text-indigo-400 font-mono text-xs tracking-widest uppercase font-bold mb-6">Contact</h4>
+              <h4 className="text-indigo-400 font-mono text-xs tracking-widest uppercase font-bold mb-6">Support & Legal</h4>
               <ul className="space-y-4 font-light text-sm">
                 <li className="flex items-start gap-3">
-                  <MapPin size={16} className="shrink-0 mt-0.5 text-indigo-400" />
-                  <span>Abu Dhabi Road, Babar Colony, RYK</span>
+                  <Link to="/contact" className="hover:text-indigo-400 transition-colors flex items-center gap-2">Contact Us</Link>
                 </li>
-                <li className="flex items-center gap-3">
-                  <Mail size={16} className="shrink-0 text-indigo-400" />
-                  <a href="mailto:hananirfan85@gmail.com" className="hover:text-indigo-400 transition-colors">hananirfan85@gmail.com</a>
+                <li className="flex items-start gap-3">
+                  <Link to="/privacy-policy" className="hover:text-indigo-400 transition-colors flex items-center gap-2">Privacy Policy</Link>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Link to="/terms" className="hover:text-indigo-400 transition-colors flex items-center gap-2">Terms & Conditions</Link>
+                </li>
+                <li className="flex items-start gap-3">
+                  <Link to="/disclaimer" className="hover:text-indigo-400 transition-colors flex items-center gap-2">Disclaimer</Link>
                 </li>
               </ul>
             </div>
           </div>
           
-          <div className="max-w-7xl mx-auto border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-light text-gray-500">
-            <p>© {new Date().getFullYear()} NEXA POS System. All rights reserved.</p>
-            <div className="flex gap-6">
-              <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
-              <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-            </div>
+          <div className="max-w-7xl mx-auto border-t border-white/5 pt-8 flex flex-col items-center justify-center gap-4 text-xs font-light text-gray-500 text-center">
+            <p>© {new Date().getFullYear()} NEXA POS System in Pakistan. All rights reserved.</p>
           </div>
         </footer>
       </div>

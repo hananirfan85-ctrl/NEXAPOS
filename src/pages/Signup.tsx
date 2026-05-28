@@ -47,7 +47,7 @@ export default function Signup() {
     if (email === 'debug@nexapos.com') {
        const url = import.meta.env.VITE_SUPABASE_URL || 'MISSING';
        const key = import.meta.env.VITE_SUPABASE_ANON_KEY || 'MISSING';
-       setError(`DEBUG MODE:\nURL Length: ${url.length}\nURL Starts With: ${url.substring(0, 10)}...\nKey Length: ${key.length}\Key Starts With: ${key.substring(0, 10)}...`);
+       setError(`DEBUG MODE:\nURL Length: ${url.length}\nURL Starts With: ${url.substring(0, 10)}...\nKey Length: ${key.length}\nKey Starts With: ${key.substring(0, 10)}...`);
        setLoading(false);
        return;
     }

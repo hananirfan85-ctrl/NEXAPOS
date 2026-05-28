@@ -85,7 +85,7 @@ export default function POS() {
 
   const completeSale = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (cart.length === 0 || !user) return;
+    if (cart.length === 0 || !user || processing) return;
     setProcessing(true);
 
     const receivedAmount = parseFloat(cashReceived) || cartTotal;

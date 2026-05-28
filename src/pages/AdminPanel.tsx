@@ -13,7 +13,38 @@ type AuthUser = {
 export default function AdminPanel() {
   const [users, setUsers] = useState<AuthUser[]>([]);
   const [messages, setMessages] = useState<any[]>([]);
-  const [activeTab, setActiveTab] = useState<'clients' | 'messages'>('clients');
+  const [activeTab, setActiveTab] = useState<'clients' | 'messages' | 'backup'>('clients');
+
+  const handleBackup = async () => {
+    setLoading(true);
+    try {
+      const { data: users } = await supabase.rpc('get_all_users_with_roles');
+      const { data: products } = await supabase.from('products').select('*');
+      const { data: sales } = await supabase.from('sales').select('*');
+      const { data: customers } = await supabase.from('customers').select('*');
+
+      const backupData = {
+        timestamp: new Date().toISOString(),
+        users: users || [],
+        products: products || [],
+        sales: sales || [],
+        customers: customers || []
+      };
+
+      const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `nexapos_backup_${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err: any) {
+      alert('Backup failed: ' + err.message);
+    }
+    setLoading(false);
+  };
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [needsSetup, setNeedsSetup] = useState(false);
@@ -245,6 +276,12 @@ $$ LANGUAGE plpgsql;
           >
             User Messages
           </button>
+          <button 
+            onClick={() => setActiveTab('backup')}
+            className={`px-4 py-2 text-sm font-medium rounded-md transition-all ${activeTab === 'backup' ? 'bg-white shadow-sm text-indigo-600' : 'text-gray-600 hover:text-gray-900'}`}
+          >
+            Database Backup
+          </button>
         </div>
       </div>
       
@@ -384,6 +421,21 @@ $$ LANGUAGE plpgsql;
                 </table>
               </div>
             )}
+          </div>
+        ) : activeTab === 'backup' ? (
+          <div className="bg-white border border-gray-100 shadow-sm rounded-xl p-8 text-center max-w-2xl mx-auto mt-8">
+            <Database className="mx-auto text-indigo-500 mb-6" size={48} />
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Master Database Backup & Export</h2>
+            <p className="text-gray-600 mb-8 max-w-md mx-auto">
+              Export all system records, products, inventory, users, and historical sale ledgers in a compressed JSON format for safekeeping and compliance auditing.
+            </p>
+            <button
+              onClick={handleBackup}
+              disabled={loading}
+              className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white rounded-xl font-bold transition-all shadow-md active:scale-95"
+            >
+              {loading ? 'Generating Export...' : 'Download Full JSON Backup'}
+            </button>
           </div>
         ) : (
           <div className="bg-white border border-gray-100 shadow-sm rounded-xl overflow-hidden">

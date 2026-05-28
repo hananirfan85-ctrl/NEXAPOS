@@ -5,175 +5,287 @@ import { Link, useParams } from 'react-router-dom';
 
 const features = {
   'billing': {
-    title: 'Fast & Easy Billing',
-    subtitle: 'Lightning-fast checkout, built for extreme volume and complete offline reliability.',
-    desc: 'The NEXA POS Point of Sale module brings an architectural leap in retail management. We stripped away the bloat of traditional web apps and built a streamlined interface that responds in milliseconds.',
-    benefits: ['Sub-second transaction parsing', 'Full offline synchronization', 'Customizable receipt templates', 'Multi-payment tender support', 'Barcode scanner integration'],
+    title: 'Fast & Easy Billing System',
+    subtitle: 'Lightning-fast checkout, built for extreme volume and complete offline reliability in Pakistan and beyond.',
+    desc: 'The NEXA POS Retail Billing module brings an architectural leap in retail management. We stripped away the bloat of traditional web apps and built a streamlined point-of-sale interface that responds in milliseconds. Whether you represent a single-lane kiosk or a massive supermarket chain, this billing software is engineered to keep queues moving and securely process offline queues during internet drops.',
+    benefits: ['Sub-second transaction parsing', 'Full offline synchronization via IndexedDB', 'Search-based fast entry', 'Direct cash tender support', 'Tax & Discount computations'],
     sections: [
       {
         icon: Zap,
-        title: "Microsecond Latency",
-        content: "Traditional POS systems take 2-3 seconds per scan. NEXA POS processes line items locally using IndexedDB, reducing cart operation latency to under 50 milliseconds. Whether you are scanning one item or one hundred, the interface never skips a beat."
+        title: "Microsecond Latency & Search Processing",
+        content: "Traditional web POS systems often take 2-3 seconds per item because they rely on slow server callbacks. NEXA POS processes line items locally. By caching the inventory catalog inside your browser's IndexedDB, searching an item reduces the cart operation latency to under 50 milliseconds. Whether you are adding one item or one hundred, the interface never skips a beat. The cart automatically groups identical SKUs and calculates dynamic subtotals."
       },
       {
         icon: ShieldCheck,
-        title: "Architectural Reliability",
-        content: "Built on an offline-first service worker architecture. The POS doesn't just 'tolerate' being offline—it is designed to function exactly the same. No missing styles, no hanging loading spinners."
+        title: "Architectural Offline Reliability",
+        content: "Built on an offline-first service worker architecture. The POS doesn't just 'tolerate' being offline—it is fundamentally designed to function exactly the same without a network. Internet instability is common; your POS System shouldn't be. When disconnected, transactions are safely queued in the browser. When the network returns, an automatic synchronization engine safely flushes the ledger to the cloud."
       },
       {
         icon: BarChart3,
-        title: "Dynamic Price Matrices",
-        content: "Apply wholesale discounts, bulk pricing rules, and seasonal markdowns without complex configurations. The billing engine calculates tax and multi-tier discounts on the fly."
+        title: "Dynamic Price Adjustments",
+        content: "Apply item markdowns and adjust quantities without complex configurations. The billing engine calculates tax and discounts on the fly directly inside the point of sale."
       },
       {
         icon: Clock,
-        title: "End-of-Day Reconciliation",
-        content: "Balance your cash drawer with digital accuracy. The system automatically tracks every drop, payout, and tender type, creating an immutable audit log for total peace of mind at the end of a shift."
+        title: "Receipt Generation",
+        content: "Generate a detailed, professional digital receipt instantly upon cash checkout. The system records the transaction inside your sales ledger for complete documentation."
+      }
+    ],
+    seoContent: [
+      {
+        heading: "Ultimate Retail Billing Software in Pakistan",
+        text: "In the rapidly evolving retail sector, a fast, reliable, and secure Billing Software is the backbone of any successful business. NEXA POS system provides the ultimate Retail POS Software solution designed specifically to meet the high demands of supermarkets, pharmacies, fashion boutiques, and cafes. We understand that every second spent at the checkout counter directly impacts your customer’s experience. That’s why our point-of-sale interface has been optimized for extreme speed, ensuring that long queues are processed efficiently and flawlessly."
       },
       {
-        icon: Rocket,
-        title: "Split Tenders & Credit",
-        content: "Allow customers to pay half in cash and half on card effortlessly. Instantly handle advanced payment use-cases without confusing the cashier or requiring manager overrides."
+        heading: "Why Cloud-Based POS Systems Outperform Legacy Desktop Software",
+        text: "For decades, businesses relied on heavy, localized desktop software for their billing needs. These legacy systems were prone to catastrophic hard drive failures, rampant virus infections, and isolated data that managers couldn't access from home. NEXA POS revolutionizes this paradigm by offering a Cloud-Based POS System in Pakistan. By leveraging enterprise-grade cloud databases (Supabase & PostgreSQL), your sales data is backed up instantly. Owners can monitor their store’s live billing from their smartphones anywhere in the world. Furthermore, as a web application, updates are instantaneous—no manual installations or IT teams required. You always possess the latest features and security patches."
       },
       {
-        icon: CheckCircle,
-        title: "Seamless Receipt Customization",
-        content: "Automatically print thermal receipts with your business logo, custom footers, and dynamically updated QR codes for digital verifications."
+        heading: "Mastering the Offline-First Architecture",
+        text: "One of the absolute greatest challenges for SaaS platforms in developing regions is internet stability. We built NEXA POS with an Offline-First mindset. Unlike standard web applications that display a frustrating offline dinosaur game when the connection drops, NEXA POS remains completely functional. It caches your inventory in your local cache. Your cashiers can continue to search products, add items to the cart, apply discounts, and process cash payments. The bills are held securely in a local encrypted queue. Once your connection restores, the system synchronizes the data globally. This ensures zero downtime during peak retail hours."
+      },
+      {
+        heading: "Streamlined Cash Handling & Ledger Accuracy",
+        text: "An effective POS System in Pakistan must cater to rapid consumer payment flows. NEXA POS handles cash tender smoothly, directly integrating with the backend ledgers so that at the end of a shift, you can audit the total sales with 100% data fidelity. Every single rupee is accounted for. There is no longer a need to spend hours finding mathematical discrepancies because the software calculates tax, gross totals, discounts, and net totals instantly. From the moment the payment is recorded, your digital accounting books are balanced."
+      },
+      {
+        heading: "Scalability for Multi-Store Empires",
+        text: "Are you opening a second branch? NEXA POS scales intuitively. Because the database lives in the cloud, launching a new store requires zero new software configurations. Simply log in from a new browser terminal. Product catalogs, pricing strategies, and managerial rules are globally applied across all your endpoints. This ensures absolute brand consistency and operational oversight across massive geographic distances."
       }
     ]
   },
   'inventory': {
-    title: 'Real-Time Inventory',
-    subtitle: 'Track every SKU across all locations with surgical precision.',
-    desc: 'Deep inventory management that scales with your business. Get real-time alerts for low stock, track supplier performance, and manage complex variants with ease.',
-    benefits: ['Real-time stock deduction', 'Low stock warnings', 'Category filtering', 'Detailed price management', 'Automated low stock alerts'],
+    title: 'Real-Time Inventory Management',
+    subtitle: 'Track every SKU across all locations with surgical precision and cloud persistence.',
+    desc: 'Deep inventory management software that scales with your business. Get complete visibility on current stock levels, track categorization, and never accidentally oversell a product again. NEXA POS transforms chaotic stockrooms into digitally organized powerhouses.',
+    benefits: ['Real-time stock deduction', 'Detailed catalog structuring', 'Simplified category filtering', 'Streamlined price management', 'Cloud-synchronized quantities'],
     sections: [
       {
         icon: BarChart3,
-        title: "High-Density Tracking",
-        content: "Map your physical store exactly as it is. Track inventory by aisle, bin, or warehouse zone. Perform cycle counts without shutting down the store."
+        title: "High-Density Tracking & Categories",
+        content: "Stop wrestling with messy spreadsheets. NEXA POS allows you to structure your entire catalog into localized categories. Drill down your inventory by type, and instantly filter through your catalog during restocks or inventory audits."
       },
       {
         icon: ShieldCheck,
         title: "Immutable Stock Ledgers",
-        content: "Every single inventory movement—whether a sale, a return, or a manual adjustment—is logged in a permanent ledger. Trace the exact lifecycle of any product to eliminate shrinkage."
+        content: "Every single sales movement is mathematically consistent. Because the POS directly ties to the inventory module, every time a cashier completes a checkout, the exact quantities are subtracted from your total stock in real-time."
       },
       {
         icon: Zap,
-        title: "Fast Categorization",
-        content: "Stop scrolling endlessly. Quickly categorize your items by type and instantly filter through your catalog during restocks or inventory audits."
+        title: "Total Catalog Visibility",
+        content: "Instantly view the total count of distinct items across your entire retail space, ensuring your warehouse team knows exactly what exists in the system without manually counting."
       },
       {
         icon: Rocket,
-        title: "Simplified Matrix Updates",
-        content: "Quickly manage stock and pricing across your entire retail catalog without navigating through dozens of complex menus."
+        title: "Simplified Product Editing",
+        content: "Quickly manage stock and pricing across your entire retail catalog. Editing product names, adjusting retail prices, or updating quantities is streamlined. The changes propagate down to every physical terminal instantly."
+      }
+    ],
+    seoContent: [
+      {
+        heading: "The Power of Cloud Inventory Management Software",
+        text: "Inventory is the liquid cash of your business. Mismanaging it leads to dead capital, expired goods, and lost sales revenue. Utilizing modern Inventory Management Software provides store owners with absolute visibility over their physical assets. NEXA POS utilizes highly concurrent PostgreSQL relational databases to track your stock levels dynamically. When you operate a modern POS System in Pakistan, you need software that understands the complexity of retail economics, ensuring that everything from purchasing to the final sale is meticulously recorded."
       },
       {
-        icon: Clock,
-        title: "Stock Movement Tracking",
-        content: "Every inventory adjustment and sale is recorded. Trace the exact lifecycle of any product to eliminate shrinkage and maintain balanced books."
+        heading: "Eliminating Retail Shrinkage",
+        text: "Retail shrinkage—the loss of inventory due to administrative errors or shoplifting—is a massive drain on profitability. By deploying the NEXA POS Shop Management System, you establish strict digital oversight. Because every sale dictates a stock deduction, physical inventory audits quickly reveal exactly where discrepancies originate. By keeping an accurate count logged digitally, this security framework protects your profit margins."
       },
       {
-        icon: CheckCircle,
-        title: "Barcode Printing & Generation",
-        content: "Generate and print custom barcode labels directly from the system. Keep your physical inventory scannable and completely synchronized with the database."
+        heading: "Real-Time Adjustments",
+        text: "Speed is critical during receiving. When fresh stock arrives from a distributor, your warehouse team can rapidly upload or adjust inventory quantities and pricing in the dashboard. This integration between the Inventory Management Software and the point-of-sale terminal creates a harmonious, fast-paced ecosystem, lowering data-entry errors through a clean UI."
+      },
+      {
+        heading: "Intelligent Categorization",
+        text: "You cannot grow a business if you don\'t organize it correctly. By categorizing specific inventory items, business owners can engage in intelligent stock grouping. NEXA POS helps manage massive catalogs intuitively. Our comprehensive Shop Management System ensures you can always organize what your customers desire most."
+      },
+      {
+        heading: "Data Centralization for Retail Logistics",
+        text: "Operating a storefront demands centralized data. NEXA POS acts as the single source of truth for your business empire. With real-time inventory synchronization, you can monitor the stock levels of a store remotely. It simplifies logistics and ensures that you maintain absolute control over your retail footprint without needing localized IT servers."
       }
     ]
   },
   'reports': {
-    title: 'Advanced Reports',
-    subtitle: 'Actionable insights, generated the moment you sell.',
-    desc: 'Stop guessing and start knowing. Our Analytics engine parses every transaction to give you beautifully rendered charts on profit margins, gross revenue, and transaction trends.',
-    benefits: ['Live profit/loss dashboards', 'Gross revenue charting', 'Profit trend lines', 'Last 30-day analytics', 'Transaction volume tracking'],
+    title: 'Advanced Analytics & Reports',
+    subtitle: 'Actionable sales insights and data visualizations, generated the moment you sell.',
+    desc: 'Stop guessing and start knowing. The NEXA POS Analytics engine parses every transaction to give you beautifully rendered charts on profit margins, gross revenue, and transaction trends. This data guarantees that leaders make financially sound operational decisions.',
+    benefits: ['Live profit/loss dashboards', 'Gross revenue graphical charting', 'Profit trend lines', 'Granular historical analytics', 'Custom printable views'],
     sections: [
       {
         icon: BarChart3,
         title: "Live Dashboarding",
-        content: "Watch your business pulse in real-time. The dashboard aggregates gross revenue and net profit instantly as sales occur at the register."
+        content: "Watch your business pulse in real-time. The main dashboard aggregates gross revenue, net profit, and total sales counts instantly as sales occur at the register. We utilize high-performance charting libraries to render this data smoothly."
       },
       {
         icon: Rocket,
         title: "Daily Revenue Charting",
-        content: "NEXA POS visually graphs your sales over the last 30 days, helping you easily identify which days had the highest gross revenue."
+        content: "NEXA POS visually graphs your sales over historical periods, helping you easily identify which days had the highest gross revenue. Understand your weekly sales cycles physically through interactive bar and line charts."
       },
       {
         icon: ShieldCheck,
-        title: "Profit Trend Lines",
-        content: "A dedicated profit trend line chart clearly delineates your net profit margins over time, letting you trace profitability distinct from sheer volume."
+        title: "Printable Sales Ledgers",
+        content: "Accountants require hard data. Easily navigate through the detailed 'Sales' page to find chronological, immutable logs of every receipt printed. These records can be filtered and printed for legal tax filing and internal financial audits."
       },
       {
         icon: Clock,
-        title: "Data Reliability",
-        content: "Your reports are instantly generated directly from your sales ledger. No manual spreadsheet export required to know your monthly standing."
+        title: "Data Reliability & Speed",
+        content: "Your reports are instantly generated directly from your sales ledger. No manual spreadsheet export required to know your monthly standing. Supabase handles the complex aggregations, returning your data to the dashboard in milliseconds."
+      }
+    ],
+    seoContent: [
+      {
+        heading: "Data-Driven Retail Management",
+        text: "In the 21st century, relying solely on intuition is a recipe for business failure. Successful enterprises rely on concrete data. NEXA POS acts as an advanced Retail POS Software that doubles as a comprehensive business intelligence tool. By analyzing massive streams of transactional data, our system compiles beautiful, intelligible graphs. This allows store owners to instantly comprehend their financial health, visualize revenue trends, and identify their highest-margin product lines without hiring an expensive data analyst."
+      },
+      {
+        heading: "The Importance of Real-Time Profit Analytics",
+        text: "Gross revenue is often a vanity metric; net profit is what sustains a business. The true power of our Shop Management System lies in its ability to automatically calculate profit margins dynamically. Because the software inherently knows the internal cost price of your inventory and the exterior retail price at checkout, every receipt generated silently computes the net gain. The executive dashboard then visualizes this profit, offering you a pristine understanding of your true financial standing."
+      },
+      {
+        heading: "Streamlining Accounting and Tax Preparation",
+        text: "Tax preparation in Pakistan, or anywhere globally, can be incredibly stressful if historical ledgers are fragmented or recorded manually on paper. The NEXA POS system digitizes the entire financial trail. The chronological sales ledger provides an unalterable history of every interaction. You can easily export or print these logs to hand over to certified public accountants, significantly reducing billable accounting hours and preventing costly taxation errors."
+      },
+      {
+        heading: "Identifying Strategic Growth Opportunities",
+        text: "Advanced reporting highlights anomalies in your business workflow. If Tuesday afternoons consistently show a major dip in transaction volume, you can utilize that data to launch targeted marketing campaigns or happy-hour discounts. Alternatively, if reporting shows a massive spike during weekends, you know exactly when to double your cashier staff to prevent long lines. Utilizing our POS System in Pakistan means deploying a scientifically optimized retail strategy."
+      },
+      {
+        heading: "Cloud Security for Financial Ledgers",
+        text: "When dealing with sensitive financial data, security is paramount. Storing accounting data on local, vulnerable hard drives exposes businesses to ransomware and physical theft. NEXA POS securely encrypts your reports in isolated cloud clusters. The robust authentication methods ensure data is kept safe, protecting your private financial state."
       }
     ]
   },
   'crm': {
-    title: 'CRM & Ledgers',
-    subtitle: 'Track loyalty and retain your best customers.',
-    desc: 'Customer relationships dictate future revenue. Maintain a highly detailed digital ledger for each customer, tracking their loyalty points, total purchases, and contact details entirely securely in the cloud.',
-    benefits: ['Detailed Customer Records', 'Contact Info Storage', 'Purchase Volume Tracking', 'Loyalty Points Tracking', 'Quick Identification'],
+    title: 'CRM & Customer Ledgers',
+    subtitle: 'Track customer loyalty, manage accounts, and retain your most valuable clients.',
+    desc: 'Customer relationships dictate future revenue. Maintain a highly detailed digital ledger for each customer, tracking their balances, total purchases, and contact details entirely securely in the cloud. NEXA POS enables intelligent customer interactions.',
+    benefits: ['Detailed Customer CRM Profiles', 'Digital Customer Ledgers & Balances', 'Purchase History Filtering', 'Secure Contact Storage', 'Fast visual tags'],
     sections: [
       {
         icon: ShieldCheck,
         title: "Secure Customer Databases",
-        content: "Keep all client information safely stored. Phone numbers, emails, and physical addresses are easily accessible."
+        content: "Keep all client information safely stored. Phone numbers, emails, addresses, and identifying parameters are easily accessible to the management team."
       },
       {
         icon: Zap,
         title: "Digital Customer Ledgers",
-        content: "Create records for your VIPs. Quickly retrieve customer details to speed up their experience at checkout."
+        content: "Managing B2B accounts or regular clients who maintain a running balance is finally easy. NEXA POS allows you to track exactly how much a customer owes your business, record partial payments, and view their complete ledger history."
       },
       {
         icon: Rocket,
-        title: "Points & Purchase Tracking",
-        content: "NEXA POS stores total lifetime purchases and loyalty points so you can easily identify your most valuable customers."
+        title: "Loyalty Points Tracking",
+        content: "NEXA POS stores loyalty points so you can easily identify your most valuable customers, assigning VIP visual tags dynamically."
+      }
+    ],
+    seoContent: [
+      {
+        heading: "Next-Generation CRM Integrated into your POS",
+        text: "A standalone Customer Relationship Manager (CRM) is useful, but a CRM natively embedded into your Retail POS Software is revolutionary. NEXA POS bridges the gap between sales and relationship building. Instead of guessing who your top buyers are, the software definitively tracks lifetime value. By recording names, contacts, and historical preferences, your sales staff can provide a hyper-personalized shopping experience, greeting returning clients by name and understanding their exact purchase history."
+      },
+      {
+        heading: "Mastering the B2B Customer Ledger Concept",
+        text: "In many wholesale and regional markets, businesses operate heavily on credit or rolling balances. Traditional notebooks or generic spreadsheets fail spectacularly when trying to maintain accurate financial balances across multiple clients. The NEXA POS Shop Management System features an institutional-grade customer ledger. You can seamlessly record when a client takes goods on credit, and correctly log when they deposit partial payments. The exact accounting balance is calculated automatically, eliminating disputes over 'who owes what'."
+      },
+      {
+        heading: "Building Long-Term Brand Loyalty",
+        text: "Acquiring a new customer is significantly more expensive than retaining an existing one. Utilizing the data captured by our CRM, store owners can execute highly targeted re-engagement strategies. Knowing exactly who your VIP customers are transforms your simple POS System in Pakistan into an advanced retention platform."
+      },
+      {
+        heading: "Data Privacy and Secure Storage",
+        text: "Collecting consumer data carries immense responsibility. We engineered NEXA POS to respect data privacy boundaries. Because all information is vaulted securely within highly defended PostgreSQL structures, you are utilizing an enterprise-tier secure architecture. Roles and permissions ensure that your customer phone numbers and preferences are kept secure."
+      },
+      {
+        heading: "The Future of Hyper-Local Retail",
+        text: "We firmly believe the future of retail belongs to brands that truly understand their demographic. By digitizing your customer relationships, you pivot away from being a generic, faceless storefront into becoming a valued community hub. A digital ledger not only manages financial credit but builds immense trust. When your Shop Management System is perfectly synchronized with your actual financial reality, your operational confidence skyrockets."
       }
     ]
   },
   'users': {
-    title: 'Multi-User Access',
-    subtitle: 'Granular permissions securely gating your empire.',
-    desc: 'Scale your business by building out your workforce safely. Provide roles and strict permissions to various employees, giving them exactly what they need, and nothing more.',
-    benefits: ['Role Based Access Control', 'Admin Override Capabilities', 'Action Activity Logs', 'Pending Approval Tiers', 'Data Security'],
+    title: 'Multi-User Administration',
+    subtitle: 'Manage roles and delegate operational capabilities without losing control.',
+    desc: 'Scale your business by building out your workforce securely. Provide roles such as Cashier and Administrator to various employees, giving them exactly what they need, and nothing more. NEXA POS protects your sensitive analytical data.',
+    benefits: ['Role Based Access Control (Admin/Cashier)', 'Database Driven Users', 'Secure Authentication Flows', 'Data Leak Prevention', 'Scalable Employee Onboarding'],
     sections: [
       {
         icon: ShieldCheck,
-        title: "Row Level Security (RLS)",
-        content: "Postgres RLS is automatically enforced. Users are strictly contained within their assigned data access boundaries."
+        title: "Role-Based Access Control",
+        content: "Not all employees need to see the net profit charts. NEXA POS cleanly delineates between 'Administrators' and 'Cashiers'. Floor staff only see what they uniquely require to complete transactions, while owners retain supreme command over settings and analytics."
       },
       {
         icon: Zap,
-        title: "Pending Approval Tiers",
-        content: "Every new user account created requires strict Super Admin verification. You dictate who joins your digital environment. Prevent unauthorized endpoints permanently."
+        title: "Admin Panel Configuration",
+        content: "Set up your database easily through the integrated Admin Panel. Complete control over your entire Postgres architecture allows for robust system deployments and user creations."
       },
       {
         icon: Clock,
-        title: "Action Activity Logs",
-        content: "Important actions like completing sales are logged directly into the system. By tracking precisely who processed which transaction, you ensure accountability."
+        title: "Rapid Deployment",
+        content: "If an employee joins the company, their access can be instantly created from the central database. Because the authentication is handled rapidly via Supabase cloud tokens, onboarding is secure and robust."
+      }
+    ],
+    seoContent: [
+      {
+        heading: "Securing the Retail Frontier with Multi-User Systems",
+        text: "One of the most dangerous flaws of legacy Desktop Billing Software was the reliance on a single shared password for all staff computers. This approach made accountability absolutely impossible. NEXA POS implements strict Role-Based Access Control (RBAC). Every cashier, floor manager, and owner receives their own unique, authenticated login credential. By distinctly identifying who is operating the POS System in Pakistan, business owners achieve complete transparency over daily operations."
+      },
+      {
+        heading: "Preventing Internal Retail Fraud",
+        text: "Unfortunately, internal shrinkage and unauthorized discounting constitute massive losses within the retail sector. By restricting specific actions—such as viewing total wholesale costs or analytics—solely to Administrator accounts, the software inherently prevents fraud. The system automatically enforces these boundaries using programmatic checks, meaning a cashier session cannot arbitrarily access the restricted administrative charts."
+      },
+      {
+        heading: "Robust Application Foundations",
+        text: "Every critical user session within the NEXA POS platform utilizes securely signed JWT tokens. When balancing the books at the end of the month, you can remain completely confident that your system wasn't compromised, fostering a culture of extreme precision within your Shop Management System."
+      },
+      {
+        heading: "Scalable Employee Onboarding",
+        text: "As your enterprise expands and you hire more floor staff, deploying software to them must be frictionless. Because NEXA POS is entirely web-based, bringing a new employee online takes practically zero time. You simply navigate to your interface, setup the database, and they login. There are no software client installations, no complex network proxy setups, and zero hardware compatibility checks necessary."
+      },
+      {
+        heading: "Centralized Command Architecture",
+        text: "The ultimate goal of our Retail POS Software is to free the business owner from the constraints of physical geography. By scaling your workforce\'s access through one unified cloud platform, you become an overarching command center. Whether you are operating three local boutiques or twenty national chain stores, the ability to utilize robust cloud credentials from a single pane of glass represents the pinnacle of modern software engineering."
       }
     ]
   },
   'cashflow': {
-    title: 'Cash Flow Insights',
-    subtitle: 'Track every income and expense in your business effortlessly.',
-    desc: 'With this feature, you can track every income and expense in your business. For example, you can enter each transaction by date—recording when money came in and when money went out. This will allow you to see when your business is in profit and when your cash flow is negative.',
-    benefits: ['Detailed Transaction Histories', 'Categorize Income vs Expenses', 'Live Net Balance Display', 'Immutable Historical Records', 'Secure Cloud Summarizations'],
+    title: 'Cash Flow Management',
+    subtitle: 'Track every income and operational expense to realize your true net standing.',
+    desc: 'With the dedicated Cash Flow module, you can track every income and expense in your business outside of purely retail sales. Log daily operational expenditures like rent, utilities, and payroll to gain a perfectly accurate net balance.',
+    benefits: ['Detailed Expense Logging', 'Categorize Income vs Expenses', 'Live Net Balance Recalculation', 'Immutable Historical Records', 'Easier Tax Preparation'],
     sections: [
       {
         icon: BarChart3,
         title: 'Net Profit Tracking',
-        content: 'Understand your true financial standing at a glance. By inputting operational expenses against your automated POS sales income, you can view your real net balance.'
+        content: 'Understand your true financial standing at a glance. By actively inputting localized operational expenses against your automated POS sales income, the dashboard will actively render your true liquid net balance.'
       },
       {
         icon: Clock,
         title: 'Chronological Logs',
-        content: 'Log daily expenses like utility bills and bulk supply purchases. Scroll back through months of chronological data to pinpoint cash flow bottlenecks.'
+        content: 'Log daily expenses manually. Scroll back through months of chronological data to pinpoint exactly where your capital is leaking, helping you restructure budgets to increase total margins.'
       },
       {
         icon: ShieldCheck,
-        title: 'Data Integrity',
-        content: 'Every record is encrypted in the database. Ensure no fraudulent entries are made by leveraging strict user access controls mapped to your cash flow ledger.'
+        title: 'Isolated Financial Data',
+        content: 'The cashflow ledger is kept distinct from your retail inventory sales, allowing you to clearly see the dividing line between gross product profit and overarching operational business expenses.'
+      }
+    ],
+    seoContent: [
+      {
+        heading: "Beyond Retail: Holistic Business Cash Flow",
+        text: "A truly powerful Shop Management System must acknowledge that a business is more than just scanning items. Operating a storefront involves rent, utility bills, employee salaries, and maintenance costs. The NEXA POS Cash Flow module bridges the gap between a standard checkout tool and a proper ERP (Enterprise Resource Planning) solution. By allowing owners to record every external expense dynamically, the software provides a holistic view of the company’s treasury, ensuring you never run into negative liquid capital due to blind spots."
+      },
+      {
+        heading: "Dynamic Net Balance and Financial Security",
+        text: "While the basic reporting dashboard shows you profit derived directly from item markups, the Cash Flow ledger illustrates your true 'take-home' reality. If your Retail POS Software reports a highly profitable month in product sales, but your Cash Flow tool highlights immense capital drain through excessive marketing expenses, you can immediately pivot your strategy. This clear demarcation of income vs. operational expenditure is the cornerstone of responsible financial engineering."
+      },
+      {
+        heading: "Simplifying the Audit and Tax Burden",
+        text: "Small to medium-sized enterprises frequently struggle during tax season due to fragmented receipts stored in shoeboxes. By strictly utilizing the NEXA POS platform to log your operational expenses alongside your daily sales, you develop a pristine, unbroken digital chain of your business’s financial history. This robust organizational habit severely reduces the hours spent by external accountants formatting your data, thereby reducing your administrative overhead substantially."
+      },
+      {
+        heading: "Predictive Analytics and Budget Structuring",
+        text: "Data is only useful if it affects future behavior. By observing your chronological expense logs, you begin to notice patterns. Perhaps utility costs spike egregiously in July, or supply chain shipping fees erode margins in December. Recognizing these trends through our POS System in Pakistan empowers you to structure intelligent predictive budgets, ensuring your cash reserves are robust enough to weather seasonal operational spikes."
+      },
+      {
+        heading: "The Psychology of Transparent Ledgers",
+        text: "Operating a business carries immense cognitive load. Wondering if your enterprise is actually profitable causes extreme stress. Adopting NEXA POS's rigorous Cash Flow tracking removes the ambiguity. When every transaction, positive or negative, is objectively recorded and displayed on an intuitive dashboard, the emotional burden lifts. You transition from hoping your business is surviving into mathematically knowing your business is thriving."
       }
     ]
   }
@@ -276,6 +388,26 @@ export default function FeaturePage() {
                );
              })}
           </div>
+
+          {/* Deep Dive SEO Content */}
+          {feature.seoContent && feature.seoContent.length > 0 && (
+            <div className="mt-24 max-w-4xl mx-auto bg-black/40 border border-white/10 p-8 md:p-12 lg:p-16 rounded-3xl backdrop-blur-md">
+              <h2 className="text-4xl font-display font-bold text-white mb-12 border-b border-white/10 pb-4">In-Depth Technical Insights & Industry Architecture</h2>
+              <div className="space-y-12">
+                {feature.seoContent.map((seo, idx) => (
+                  <motion.div 
+                    key={idx}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                  >
+                    <h3 className="text-2xl font-bold text-indigo-300 mb-4">{seo.heading}</h3>
+                    <p className="text-lg text-gray-300 font-light leading-relaxed">{seo.text}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          )}
           
           {/* Call to action */}
           <div className="mt-32 pb-16 text-center border-t border-white/10 pt-16">
