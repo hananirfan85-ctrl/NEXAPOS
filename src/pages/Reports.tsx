@@ -121,8 +121,8 @@ export default function Reports() {
           <h2 className="text-lg font-bold text-gray-900 mb-6 font-sans">
             Daily Revenue
           </h2>
-          <div className="flex-1 w-full min-h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="flex-1 w-full min-h-[300px]" style={{ minWidth: 0, minHeight: 0 }}>
+            <ResponsiveContainer width="100%" height={300}>
               <BarChart
                 data={salesData}
                 margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
@@ -169,8 +169,8 @@ export default function Reports() {
           <h2 className="text-lg font-bold text-gray-900 mb-6 font-sans">
             Profit Trend
           </h2>
-          <div className="flex-1 w-full min-h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="flex-1 w-full min-h-[300px]" style={{ minWidth: 0, minHeight: 0 }}>
+            <ResponsiveContainer width="100%" height={300}>
               <LineChart
                 data={salesData}
                 margin={{ top: 0, right: 0, left: -20, bottom: 0 }}

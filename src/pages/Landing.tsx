@@ -31,7 +31,7 @@ import {
 import { usePwaInstall } from "../hooks/usePwaInstall";
 
 import { SEO } from "../components/SEO";
-import SeoGuide from "../components/SeoGuide";
+
 
 export default function Landing() {
   const { deferredPrompt, initiateInstall } = usePwaInstall();
@@ -554,7 +554,7 @@ export default function Landing() {
         </section>
 
         {/* Footer */}
-        <SeoGuide />
+
         <footer className="bg-[#050507] text-gray-300 py-16 px-4 border-t border-white/5 relative z-10">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-12">
             <div className="lg:col-span-2">

@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { PublicNavbar } from "../components/layout/PublicNavbar";
 import { SEO } from "../components/SEO";
+import SeoGuide from "../components/SeoGuide";
 
 export default function DemoVideo() {
   return (
@@ -38,6 +39,8 @@ export default function DemoVideo() {
            </ul>
         </div>
       </div>
+      
+      <SeoGuide />
     </div>
   );
 }
