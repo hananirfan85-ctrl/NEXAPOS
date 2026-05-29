@@ -43,6 +43,48 @@ export function AppLayout() {
   }, []);
 
   useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ignore if typing in an input
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return;
+      }
+      
+      if (e.altKey) {
+        switch (e.key.toLowerCase()) {
+          case 'd':
+            e.preventDefault();
+            navigate('/');
+            toast.success('Navigated to Dashboard');
+            break;
+          case 'p':
+            e.preventDefault();
+            navigate('/pos');
+            toast.success('Navigated to POS Billing');
+            break;
+          case 'i':
+            e.preventDefault();
+            navigate('/inventory');
+            toast.success('Navigated to Inventory');
+            break;
+          case 's':
+            e.preventDefault();
+            navigate('/sales');
+            toast.success('Navigated to Sales');
+            break;
+          case 'c':
+            e.preventDefault();
+            navigate('/customers');
+            toast.success('Navigated to Customers');
+            break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [navigate]);
+
+  useEffect(() => {
     const checkLowStock = async () => {
       if (!user) return;
       

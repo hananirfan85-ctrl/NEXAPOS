@@ -30,6 +30,9 @@ import {
 } from "lucide-react";
 import { usePwaInstall } from "../hooks/usePwaInstall";
 
+import { SEO } from "../components/SEO";
+import SeoGuide from "../components/SeoGuide";
+
 export default function Landing() {
   const { deferredPrompt, initiateInstall } = usePwaInstall();
   const [showInstallModal, setShowInstallModal] = useState(false);
@@ -94,6 +97,12 @@ export default function Landing() {
 
   return (
     <div className="relative min-h-screen font-sans selection:bg-indigo-500/30 selection:text-white overflow-hidden bg-[#0a0a0c]">
+      <SEO 
+        title="NEXA POS System | Retail & Shop Management Software in Pakistan" 
+        description="NEXA POS is an advanced Point of Sale system for businesses in Pakistan. Fast billing, offline mode, real-time inventory tracking, and CRM."
+        keywords="pos system, point of sale software, nexa pos, retail shop management, billing software offline, cash flow software"
+        author="Hanan Irfan"
+      />
       {/* Schema Markup for SEO */}
       <script
         type="application/ld+json"
@@ -545,6 +554,7 @@ export default function Landing() {
         </section>
 
         {/* Footer */}
+        <SeoGuide />
         <footer className="bg-[#050507] text-gray-300 py-16 px-4 border-t border-white/5 relative z-10">
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-12">
             <div className="lg:col-span-2">

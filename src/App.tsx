@@ -28,6 +28,8 @@ import ContactAdmin from "./pages/ContactAdmin";
 import Contact from "./pages/Contact";
 import Disclaimer from "./pages/Disclaimer";
 
+import DemoVideo from "./pages/DemoVideo";
+
 // Protected Route wrapper
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading, signOut } = useAuth();
@@ -182,6 +184,7 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/home" element={<Landing />} />
+          <Route path="/demo" element={<DemoVideo />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/docs" element={<Documentation />} />

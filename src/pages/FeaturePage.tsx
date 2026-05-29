@@ -9,6 +9,7 @@ import {
   Rocket,
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
+import { SEO } from "../components/SEO";
 
 const features = {
   billing: {
@@ -388,6 +389,11 @@ export default function FeaturePage() {
 
   return (
     <div className="min-h-screen bg-[#050505] text-white selection:bg-indigo-500/30 overflow-hidden">
+      <SEO 
+        title={`${feature.title} | NEXA POS Software`} 
+        description={feature.subtitle}
+        keywords={`nexa pos feature, ${feature.title.toLowerCase()}, retail software, pos software pakistan`}
+      />
       {/* Background Decor */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden opacity-20">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-600 rounded-full mix-blend-screen filter blur-[150px] opacity-20" />

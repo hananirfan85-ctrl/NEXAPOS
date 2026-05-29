@@ -1,10 +1,16 @@
 import React from "react";
 import { ArrowLeft, User, GraduationCap, Code } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SEO } from "../components/SEO";
 
 export default function About() {
   return (
     <div className="min-h-screen bg-[#030305] text-white selection:bg-indigo-500/30">
+      <SEO 
+        title="About NEXA POS | Founder Hanan Irfan" 
+        description="Learn about the origins of NEXA POS and its founder, Hanan Irfan. A modern cloud-based POS and retail management system."
+        keywords="about nexa pos, hanan irfan, developer, pos system founder, saas founder pakistan"
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <Link
           to="/home"

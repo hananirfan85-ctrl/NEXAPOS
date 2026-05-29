@@ -50,6 +50,12 @@ export function PublicNavbar() {
             >
               About
             </Link>
+            <Link
+              to="/demo"
+              className="text-sm font-sans font-medium text-gray-300 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-md px-2 py-1"
+            >
+              Demo
+            </Link>
             <div className="relative group">
               <button
                 className="text-sm font-sans font-medium text-gray-300 hover:text-white transition-colors flex items-center gap-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-md px-2 py-1"
@@ -179,6 +185,13 @@ export function PublicNavbar() {
             onClick={() => setIsMobileMenuOpen(false)}
           >
             About
+          </Link>
+          <Link
+            to="/demo"
+            className="block text-base font-medium text-cyan-400 hover:text-cyan-300"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Demo Video
           </Link>
           <div className="block text-base font-medium text-gray-500 mt-4 mb-2">
             Features

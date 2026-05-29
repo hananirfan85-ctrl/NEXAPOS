@@ -1,9 +1,15 @@
 import React from "react";
 import { PublicNavbar } from "../components/layout/PublicNavbar";
+import { SEO } from "../components/SEO";
 
 export default function HelpCenter() {
   return (
     <div className="min-h-screen bg-[#030305] text-white selection:bg-indigo-500/30">
+      <SEO 
+        title="Help Center & User Guide | NEXA POS" 
+        description="Official NEXA POS Help Center. Complete user guide, FAQs, and documentation on how to use our modern Point of Sale software effectively."
+        keywords="nexa pos help, pos user guide, retail software tutorial, nexa pos documentation"
+      />
       <PublicNavbar />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-24">

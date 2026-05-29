@@ -37,10 +37,17 @@ export default function AdminPanel() {
         console.warn("admin_get_all_data RPC missing");
       }
 
+      // Group records by user_id
       const backupData = {
         timestamp: new Date().toISOString(),
-        users: users || [],
-        ...allData
+        users: (users || []).map((u: any) => ({
+          ...u,
+          products: allData.products.filter((p: any) => p.user_id === u.id),
+          sales: allData.sales.filter((s: any) => s.user_id === u.id),
+          customers: allData.customers.filter((c: any) => c.user_id === u.id),
+          customer_ledgers: allData.customer_ledgers.filter((l: any) => l.user_id === u.id),
+          cash_flows: allData.cash_flows.filter((cf: any) => cf.user_id === u.id)
+        }))
       };
 
       const blob = new Blob([JSON.stringify(backupData, null, 2)], {

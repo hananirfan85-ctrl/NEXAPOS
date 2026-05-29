@@ -1,6 +1,7 @@
 import React from "react";
 import { ArrowLeft, Check, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
+import { SEO } from "../components/SEO";
 
 export default function Pricing() {
   const plans = [
@@ -53,6 +54,11 @@ export default function Pricing() {
 
   return (
     <div className="relative min-h-screen bg-[#030305] font-sans selection:bg-indigo-500/30 selection:text-white py-16 px-4 sm:px-6 lg:px-8">
+      <SEO 
+        title="Pricing Packages | NEXA POS Software" 
+        description="View our affordable pricing packages for NEXA POS. Perfect for single-location shops or enterprise supermarket chains in Pakistan."
+        keywords="pos software price, shop management system cost, nexa pos pricing, retail billing software packages"
+      />
       {/* Background Layer */}
       <div
         className="fixed inset-0 z-0 pointer-events-none opacity-20"

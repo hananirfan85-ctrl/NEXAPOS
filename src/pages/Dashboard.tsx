@@ -30,57 +30,66 @@ export default function Dashboard() {
   }, [user]);
 
   const fetchDashboardData = async () => {
+    if (!navigator.onLine) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
-
-    if (user) {
-      // Check store settings
-      const { data: settings } = await supabase
-        .from("store_settings")
-        .select("store_type")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if (!settings && user.email !== "hananirfan85@gmail.com") {
-        setShowSetupModal(true);
+    try {
+      if (user) {
+        // Check store settings
+        const { data: settings } = await supabase
+          .from("store_settings")
+          .select("store_type")
+          .eq("user_id", user.id)
+          .maybeSingle();
+        if (!settings && user.email !== "hananirfan85@gmail.com") {
+          setShowSetupModal(true);
+        }
       }
-    }
 
-    // Get today's bounds
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString();
+      // Get today's bounds
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const todayStr = today.toISOString();
 
-    // Fetch Today's Sales
-    const { data: sales } = await supabase
-      .from("sales")
-      .select("total_amount, total_profit")
-      .gte("created_at", todayStr);
+      // Fetch Today's Sales
+      const { data: sales } = await supabase
+        .from("sales")
+        .select("total_amount, total_profit")
+        .gte("created_at", todayStr);
 
-    let salesTotal = 0;
-    let profitTotal = 0;
-    if (sales) {
-      sales.forEach((s) => {
-        salesTotal += Number(s.total_amount);
-        profitTotal += Number(s.total_profit);
+      let salesTotal = 0;
+      let profitTotal = 0;
+      if (sales) {
+        sales.forEach((s) => {
+          salesTotal += Number(s.total_amount);
+          profitTotal += Number(s.total_profit);
+        });
+      }
+
+      // Fetch Products Info
+      const { data: products } = await supabase.from("products").select("stock");
+      let totalProd = 0;
+      let lowStockCount = 0;
+
+      if (products) {
+        totalProd = products.length;
+        lowStockCount = products.filter((p) => p.stock <= 5).length;
+      }
+
+      setStats({
+        todaySales: salesTotal,
+        todayProfit: profitTotal,
+        totalProducts: totalProd,
+        lowStock: lowStockCount,
       });
+    } catch (err: any) {
+      console.error("Dashboard fetch error:", err.message);
+    } finally {
+      setLoading(false);
     }
-
-    // Fetch Products Info
-    const { data: products } = await supabase.from("products").select("stock");
-    let totalProd = 0;
-    let lowStockCount = 0;
-
-    if (products) {
-      totalProd = products.length;
-      lowStockCount = products.filter((p) => p.stock <= 5).length;
-    }
-
-    setStats({
-      todaySales: salesTotal,
-      todayProfit: profitTotal,
-      totalProducts: totalProd,
-      lowStock: lowStockCount,
-    });
-    setLoading(false);
   };
 
   const saveStoreSetup = async (e: React.FormEvent) => {
@@ -99,6 +108,20 @@ export default function Dashboard() {
 
   return (
     <div className="h-full flex flex-col space-y-6">
+      {!navigator.onLine && (
+        <div className="mb-2 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <AlertTriangle className="h-5 w-5 text-yellow-400" />
+            </div>
+            <div className="ml-3">
+              <p className="text-sm text-yellow-700 font-medium">
+                You are currently offline. Dashboard statistics cannot be refreshed, but you can continue using the POS billing.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
         <div className="flex items-center gap-3">
