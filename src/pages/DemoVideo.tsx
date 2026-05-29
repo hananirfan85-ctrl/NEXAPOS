@@ -24,8 +24,7 @@ export default function DemoVideo() {
           <div className="aspect-video bg-black/60 rounded-xl overflow-hidden shadow-2xl relative flex items-center justify-center border border-white/10">
             {/* Placeholder for YouTube iframe */}
             <p className="text-gray-500 font-mono text-sm max-w-sm px-6">
-              [ Video Placeholder: Embed YouTube or local video here showcasing the fast billing action, offline sync, and CRM ledger capabilities. ]
-            </p>
+        <video src="<iframe width="560" height="315" src="https://www.youtube.com/embed/8paPp1OU7jc?si=b1oe5KzTuwcbdsz_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>"></video>
           </div>
         </div>
 
