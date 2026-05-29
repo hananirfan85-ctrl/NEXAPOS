@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Package, ShoppingCart, DollarSign, BarChart3, Clock, LogOut, Search, Menu, X, Download, WifiOff, Settings, Home, Users, Hexagon, MessageSquare } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { supabase } from '../../lib/supabase';
@@ -22,10 +22,20 @@ const navItems = [
 export function AppLayout() {
   const { signOut, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // PWA & Offline State
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  
+  const offlineRestrictedPaths = ['/pos', '/inventory', '/sales', '/cashflow', '/reports', '/records', '/customers'];
+
+  useEffect(() => {
+    if (isOffline && offlineRestrictedPaths.some(p => location.pathname.startsWith(p))) {
+      navigate('/');
+      toast.error('You are offline. Access to this feature is disabled until you reconnect.');
+    }
+  }, [isOffline, location.pathname, navigate]);
   const [showInstallModal, setShowInstallModal] = useState(false);
   const { deferredPrompt, initiateInstall } = usePwaInstall();
 
@@ -166,16 +176,23 @@ export function AppLayout() {
               return null;
             }
             
+            const isRestricted = isOffline && offlineRestrictedPaths.includes(item.path);
+
             return (
               <NavLink
                 key={item.name}
-                to={item.path}
-                onClick={closeMobileMenu}
+                to={isRestricted ? '#' : item.path}
+                onClick={isRestricted ? (e) => {
+                  e.preventDefault();
+                  toast.error('You are offline. Access to this feature is disabled until you reconnect.');
+                } : closeMobileMenu}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                    isActive
-                      ? 'bg-indigo-50 text-indigo-700 font-medium'
-                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    isRestricted 
+                      ? 'text-gray-400 cursor-not-allowed opacity-60' 
+                      : isActive
+                        ? 'bg-indigo-50 text-indigo-700 font-medium'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                   }`
                 }
               >

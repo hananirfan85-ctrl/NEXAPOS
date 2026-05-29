@@ -116,7 +116,7 @@ export default function Dashboard() {
             </div>
             <div className="ml-3">
               <p className="text-sm text-yellow-700 font-medium">
-                You are currently offline. Dashboard statistics cannot be refreshed, but you can continue using the POS billing.
+                You are currently offline. Access to features like POS billing, inventory, and sales is disabled. Dashboard statistics cannot be refreshed until you reconnect.
               </p>
             </div>
           </div>
@@ -125,12 +125,21 @@ export default function Dashboard() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
         <div className="flex items-center gap-3">
-          <Link
-            to="/pos"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm"
-          >
-            New Sale (POS)
-          </Link>
+          {!navigator.onLine ? (
+             <button
+             disabled
+             className="bg-gray-400 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm cursor-not-allowed opacity-70"
+           >
+             New Sale (POS) Offline
+           </button>
+          ) : (
+            <Link
+              to="/pos"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors text-sm"
+            >
+              New Sale (POS)
+            </Link>
+          )}
         </div>
       </div>
 
