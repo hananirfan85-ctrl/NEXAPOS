@@ -99,7 +99,7 @@ export default function About() {
                   <div className="relative w-48 h-48 lg:w-64 lg:h-64 rounded-full overflow-hidden border-2 border-indigo-500/20 shadow-[0_0_50px_-10px_rgba(99,102,241,0.5)]">
                     <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-purple-800 flex items-center justify-center">
                       <span className="text-6xl lg:text-8xl font-display font-bold text-white/50">
-                        <img src="https://pbs.twimg.com/profile_images/2022622427378020352/xOqGLbdb.jpg"alt="hanan irfan founder of nexa pos system"></img>
+                        <img src="https://pbs.twimg.com/profile_images/2022622427378020352/xOqGLbdb.jpg"alt="hanan irfan founder of nexa pos system" style="width=100%;height=100%;"></img>
                       </span>
                     </div>
                   </div>
