@@ -34,12 +34,51 @@ export default defineConfig(({mode}) => {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
           runtimeCaching: [
             {
+              urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/.*/i,
+              handler: 'NetworkOnly',
+              method: 'POST',
+              options: {
+                backgroundSync: {
+                  name: 'supabase-offline-mutations',
+                  options: {
+                    maxRetentionTime: 24 * 60 // 24 hours
+                  }
+                }
+              }
+            },
+            {
+              urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/.*/i,
+              handler: 'NetworkOnly',
+              method: 'PATCH',
+              options: {
+                backgroundSync: {
+                  name: 'supabase-offline-mutations',
+                  options: {
+                    maxRetentionTime: 24 * 60
+                  }
+                }
+              }
+            },
+            {
+              urlPattern: /^https:\/\/.*\.supabase\.co\/rest\/v1\/.*/i,
+              handler: 'NetworkOnly',
+              method: 'DELETE',
+              options: {
+                backgroundSync: {
+                  name: 'supabase-offline-mutations',
+                  options: {
+                    maxRetentionTime: 24 * 60
+                  }
+                }
+              }
+            },
+            {
               urlPattern: /^https:\/\/.*\.supabase\.co\/.*/i,
               handler: 'NetworkFirst',
               options: {
                 cacheName: 'supabase-api-cache',
                 expiration: {
-                  maxEntries: 50,
+                  maxEntries: 100,
                   maxAgeSeconds: 60 * 60 * 24 * 7 // <== 1 week
                 },
                 cacheableResponse: {

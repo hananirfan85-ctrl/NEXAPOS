@@ -1,17 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { supabase } from "../lib/supabase";
+import toast from "react-hot-toast";
 import {
   ArrowLeft,
   Mail,
   Phone,
   MapPin,
-  Building,
   Clock,
-  Search,
-  Briefcase,
 } from "lucide-react";
 
 export default function Contact() {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.firstName || !formData.email || !formData.message) {
+      toast.error("Please fill in the required fields (First Name, Email, Message).");
+      return;
+    }
+    
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase.from("user_messages").insert([
+        {
+          email: formData.email,
+          subject: formData.subject,
+          message: `From: ${formData.firstName} ${formData.lastName}\n\n${formData.message}`,
+        },
+      ]);
+
+      if (error) throw error;
+      
+      toast.success("Message sent successfully! We will get back to you soon.");
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Failed to send message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
       <div className="max-w-7xl mx-auto px-4 lg:px-8 py-16">
@@ -39,14 +82,17 @@ export default function Contact() {
         <section className="grid md:grid-cols-2 gap-16 mb-24">
           <div className="bg-white p-10 rounded-2xl shadow-sm border border-gray-100">
             <h2 className="text-3xl font-bold mb-8">Send Us a Message</h2>
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    First Name
+                    First Name <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="text"
+                    required
+                    value={formData.firstName}
+                    onChange={(e) => setFormData({...formData, firstName: e.target.value})}
                     className="w-full border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder="John"
                   />
@@ -57,6 +103,8 @@ export default function Contact() {
                   </label>
                   <input
                     type="text"
+                    value={formData.lastName}
+                    onChange={(e) => setFormData({...formData, lastName: e.target.value})}
                     className="w-full border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-indigo-500"
                     placeholder="Doe"
                   />
@@ -64,10 +112,13 @@ export default function Contact() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Email Address
+                  Email Address <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="email"
+                  required
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
                   className="w-full border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="john@example.com"
                 />
@@ -78,25 +129,31 @@ export default function Contact() {
                 </label>
                 <input
                   type="text"
+                  value={formData.subject}
+                  onChange={(e) => setFormData({...formData, subject: e.target.value})}
                   className="w-full border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="How does your billing software work?"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  How can we help?
+                  How can we help? <span className="text-red-500">*</span>
                 </label>
                 <textarea
                   rows={5}
+                  required
+                  value={formData.message}
+                  onChange={(e) => setFormData({...formData, message: e.target.value})}
                   className="w-full border border-gray-300 rounded-lg p-3 outline-none focus:ring-2 focus:ring-indigo-500"
                   placeholder="Tell us more about your inventory management software requirements..."
                 ></textarea>
               </div>
               <button
-                type="button"
-                className="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition"
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition disabled:opacity-50"
               >
-                Send Message
+                {isSubmitting ? "Sending..." : "Send Message"}
               </button>
             </form>
           </div>
@@ -140,7 +197,7 @@ export default function Contact() {
                     Available Mon-Fri, 9am to 6pm (PKT).
                   </p>
                   <p className="text-indigo-600 font-medium">
-                    +92 (XXX) XXXXXXX
+                    +92 310 6359235
                   </p>
                 </div>
               </div>

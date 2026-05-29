@@ -41,7 +41,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     };
     const handleOffline = () => {
       setIsOffline(true);
-      toast.error("You are offline. Disconnected from dashboard.");
+      toast.error("You are offline. Running in local mode.");
     };
 
     window.addEventListener("online", handleOnline);
@@ -114,11 +114,12 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
         supabase.removeChannel(subscription);
       };
     }
+    
+    // If offline, assume the last known role status is verified so they can enter the app if previously logged in.
+    if (user && isOffline && !roleStatus) {
+       setRoleStatus('user');
+    }
   }, [user, isOffline]);
-
-  if (isOffline) {
-    return <Navigate to="/home" />;
-  }
 
   if (loading || (user && !roleStatus)) {
     return (

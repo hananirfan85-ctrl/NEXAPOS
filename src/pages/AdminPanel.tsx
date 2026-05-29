@@ -29,16 +29,18 @@ export default function AdminPanel() {
     setLoading(true);
     try {
       const { data: users } = await supabase.rpc("get_all_users_with_roles");
-      const { data: products } = await supabase.from("products").select("*");
-      const { data: sales } = await supabase.from("sales").select("*");
-      const { data: customers } = await supabase.from("customers").select("*");
+      let allData: any = { products: [], sales: [], customers: [], customer_ledgers: [], cash_flows: [] };
+      try {
+        const res = await supabase.rpc('admin_get_all_data');
+        if (res.data) allData = res.data;
+      } catch (e) {
+        console.warn("admin_get_all_data RPC missing");
+      }
 
       const backupData = {
         timestamp: new Date().toISOString(),
         users: users || [],
-        products: products || [],
-        sales: sales || [],
-        customers: customers || [],
+        ...allData
       };
 
       const blob = new Blob([JSON.stringify(backupData, null, 2)], {
@@ -47,7 +49,7 @@ export default function AdminPanel() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `nexapos_backup_${new Date().toISOString().split("T")[0]}.json`;
+      link.download = `nexapos_users_backup_${new Date().toISOString().split("T")[0]}.json`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -63,27 +65,32 @@ export default function AdminPanel() {
   const [editingRoleFor, setEditingRoleFor] = useState<string | null>(null);
   const [newRoleStr, setNewRoleStr] = useState<string>("");
   const [replyText, setReplyText] = useState<Record<string, string>>({});
+  const [selectedUserForDetails, setSelectedUserForDetails] = useState<AuthUser | null>(null);
 
   const [backupPreview, setBackupPreview] = useState<{
     users: AuthUser[];
     products: any[];
     sales: any[];
     customers: any[];
+    customer_ledgers?: any[];
+    cash_flows?: any[];
   } | null>(null);
 
   const fetchBackupPreview = async () => {
     setLoading(true);
     try {
       const { data: users } = await supabase.rpc('get_all_users_with_roles');
-      const { data: products } = await supabase.from('products').select('*');
-      const { data: sales } = await supabase.from('sales').select('*');
-      const { data: customers } = await supabase.from('customers').select('*');
+      let allData: any = { products: [], sales: [], customers: [], customer_ledgers: [], cash_flows: [] };
+      try {
+        const res = await supabase.rpc('admin_get_all_data');
+        if (res.data) allData = res.data;
+      } catch (e) {
+        console.warn("admin_get_all_data RPC missing");
+      }
 
       setBackupPreview({
         users: users || [],
-        products: products || [],
-        sales: sales || [],
-        customers: customers || []
+        ...allData
       });
     } catch (err: any) {
       console.error(err);
@@ -188,7 +195,7 @@ INSERT INTO public.user_roles (user_id, email, role)
 SELECT id, email, 'pending' FROM auth.users
 ON CONFLICT (user_id) DO NOTHING;
 
--- === CRM AND LEDGER SETUP ===
+--- === CRM AND LEDGER SETUP ===
 CREATE TABLE IF NOT EXISTS public.user_messages (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID,
@@ -200,8 +207,11 @@ CREATE TABLE IF NOT EXISTS public.user_messages (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 ALTER TABLE public.user_messages ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can insert" ON public.user_messages;
 CREATE POLICY "Anyone can insert" ON public.user_messages FOR INSERT WITH CHECK (true);
+DROP POLICY IF EXISTS "Users can read own messages" ON public.user_messages;
 CREATE POLICY "Users can read own messages" ON public.user_messages FOR SELECT USING (auth.uid() = user_id);
+DROP POLICY IF EXISTS "Admins can manage" ON public.user_messages;
 CREATE POLICY "Admins can manage" ON public.user_messages FOR ALL USING (auth.jwt() ->> 'email' = 'hananirfan85@gmail.com');
 
 CREATE TABLE IF NOT EXISTS public.customers (
@@ -219,7 +229,7 @@ CREATE TABLE IF NOT EXISTS public.customers (
 
 -- Enable RLS for customers
 ALTER TABLE public.customers ENABLE ROW LEVEL SECURITY;
-
+DROP POLICY IF EXISTS "Users can manage their own customers" ON public.customers;
 CREATE POLICY "Users can manage their own customers" 
 ON public.customers FOR ALL USING (auth.uid() = user_id);
 
@@ -234,11 +244,11 @@ CREATE TABLE IF NOT EXISTS public.customer_ledgers (
 );
 
 ALTER TABLE public.customer_ledgers ENABLE ROW LEVEL SECURITY;
-
+DROP POLICY IF EXISTS "Users can manage their own customer ledgers" ON public.customer_ledgers;
 CREATE POLICY "Users can manage their own customer ledgers"
 ON public.customer_ledgers FOR ALL USING (auth.uid() = user_id);
 
--- === STORE SETTINGS & UNITS ===
+--- === STORE SETTINGS & UNITS ===
 CREATE TABLE IF NOT EXISTS public.store_settings (
   user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   store_type TEXT,
@@ -246,7 +256,7 @@ CREATE TABLE IF NOT EXISTS public.store_settings (
 );
 
 ALTER TABLE public.store_settings ENABLE ROW LEVEL SECURITY;
-
+DROP POLICY IF EXISTS "Users can manage their own store settings" ON public.store_settings;
 CREATE POLICY "Users can manage their own store settings" 
 ON public.store_settings FOR ALL USING (auth.uid() = user_id);
 
@@ -300,6 +310,30 @@ DECLARE
 BEGIN
   SELECT role INTO my_role FROM public.user_roles WHERE user_id = auth.uid();
   RETURN COALESCE(my_role, 'pending');
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION admin_get_all_data()
+RETURNS json
+SECURITY DEFINER
+AS $$
+DECLARE
+  result json;
+BEGIN
+  IF lower(auth.jwt() ->> 'email') != 'hananirfan85@gmail.com' THEN
+    RAISE EXCEPTION 'Access Denied: Super Admin Only';
+  END IF;
+
+  SELECT json_build_object(
+    'products', (SELECT COALESCE(json_agg(row_to_json(p)), '[]'::json) FROM public.products p),
+    'sales', (SELECT COALESCE(json_agg(row_to_json(s)), '[]'::json) FROM public.sales s),
+    'customers', (SELECT COALESCE(json_agg(row_to_json(c)), '[]'::json) FROM public.customers c),
+    'customer_ledgers', (SELECT COALESCE(json_agg(row_to_json(l)), '[]'::json) FROM public.customer_ledgers l),
+    'cash_flows', (SELECT COALESCE(json_agg(row_to_json(cf)), '[]'::json) FROM public.cash_flows cf),
+    'store_settings', (SELECT COALESCE(json_agg(row_to_json(ss)), '[]'::json) FROM public.store_settings ss)
+  ) INTO result;
+
+  RETURN result;
 END;
 $$ LANGUAGE plpgsql;
   `.trim();
@@ -381,7 +415,7 @@ $$ LANGUAGE plpgsql;
           <div className="p-6 space-y-4">
             <h3 className="font-semibold text-gray-900 flex items-center gap-2">
               <Database size={18} className="text-gray-500" />
-              1. Copy this SQL snippet:
+              1. Copy this REQUIRED SQL snippet (Updated):
             </h3>
             <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm font-mono leading-relaxed">
               {sqlSetupCode}
@@ -549,41 +583,141 @@ $$ LANGUAGE plpgsql;
 
           {backupPreview && (
             <div className="mt-8 border-t border-gray-100 pt-8">
-              <h3 className="text-lg font-bold text-gray-900 mb-6">Store Data Overview</h3>
-              <div className="space-y-4">
-                {backupPreview.users.map((u) => {
-                  const uProducts = backupPreview.products.filter(p => p.user_id === u.id);
-                  const uSales = backupPreview.sales.filter(s => s.user_id === u.id);
-                  const uCustomers = backupPreview.customers.filter(c => c.user_id === u.id);
+              {selectedUserForDetails ? (
+                <div>
+                  <div className="flex items-center gap-4 mb-6">
+                    <button onClick={() => setSelectedUserForDetails(null)} className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition">
+                      &larr; Back to Overview
+                    </button>
+                    <h3 className="text-xl font-bold text-gray-900">
+                      Store Data: {selectedUserForDetails.email}
+                    </h3>
+                  </div>
 
-                  if (u.email === 'hananirfan85@gmail.com') return null;
-
-                  return (
-                    <div key={u.id} className="bg-gray-50 border border-gray-200 rounded-lg p-5">
-                      <div className="flex justify-between items-center mb-4">
-                        <div className="font-semibold text-gray-900">{u.email}</div>
-                        <div className="text-xs font-mono text-gray-500 bg-white px-2 py-1 rounded border border-gray-200">
-                          ID: ...{u.id.substring(u.id.length - 8)}
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-3 gap-4 text-sm">
-                        <div className="bg-white p-3 rounded shadow-sm border border-gray-100">
-                          <div className="text-gray-500">Products</div>
-                          <div className="text-xl font-bold text-indigo-600">{uProducts.length}</div>
-                        </div>
-                        <div className="bg-white p-3 rounded shadow-sm border border-gray-100">
-                          <div className="text-gray-500">Sales Records</div>
-                          <div className="text-xl font-bold text-emerald-600">{uSales.length}</div>
-                        </div>
-                        <div className="bg-white p-3 rounded shadow-sm border border-gray-100">
-                          <div className="text-gray-500">Customers</div>
-                          <div className="text-xl font-bold text-blue-600">{uCustomers.length}</div>
-                        </div>
+                  <div className="space-y-6">
+                    <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                      <h4 className="font-bold text-gray-800 mb-4 border-b pb-2">Products</h4>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm text-left">
+                          <thead className="bg-gray-50 text-gray-500">
+                            <tr><th className="p-3">Name</th><th className="p-3">Category</th><th className="p-3">Price</th><th className="p-3">Stock</th></tr>
+                          </thead>
+                          <tbody>
+                            {backupPreview.products?.filter(p => p.user_id === selectedUserForDetails.id).map(p => (
+                              <tr key={p.id} className="border-b border-gray-50"><td className="p-3">{p.name}</td><td className="p-3">{p.category}</td><td className="p-3">${p.selling_price}</td><td className="p-3">{p.stock}</td></tr>
+                            ))}
+                            {backupPreview.products?.filter(p => p.user_id === selectedUserForDetails.id).length === 0 && (
+                              <tr><td colSpan={4} className="p-4 text-center text-gray-500">No products found</td></tr>
+                            )}
+                          </tbody>
+                        </table>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
+
+                    <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                      <h4 className="font-bold text-gray-800 mb-4 border-b pb-2">Sales Records</h4>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm text-left">
+                          <thead className="bg-gray-50 text-gray-500">
+                            <tr><th className="p-3">Date</th><th className="p-3">Amount</th><th className="p-3">Profit</th></tr>
+                          </thead>
+                          <tbody>
+                            {backupPreview.sales?.filter(s => s.user_id === selectedUserForDetails.id).map(s => (
+                              <tr key={s.id} className="border-b border-gray-50"><td className="p-3">{new Date(s.created_at).toLocaleString()}</td><td className="p-3">${s.total_amount}</td><td className="p-3">${s.total_profit}</td></tr>
+                            ))}
+                            {backupPreview.sales?.filter(s => s.user_id === selectedUserForDetails.id).length === 0 && (
+                              <tr><td colSpan={3} className="p-4 text-center text-gray-500">No sales found</td></tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                      <h4 className="font-bold text-gray-800 mb-4 border-b pb-2">Customers</h4>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm text-left">
+                          <thead className="bg-gray-50 text-gray-500">
+                            <tr><th className="p-3">Name</th><th className="p-3">Contact</th><th className="p-3">Ledger Balance</th></tr>
+                          </thead>
+                          <tbody>
+                            {backupPreview.customers?.filter(c => c.user_id === selectedUserForDetails.id).map(c => (
+                              <tr key={c.id} className="border-b border-gray-50"><td className="p-3">{c.name}</td><td className="p-3">{c.email || c.phone || 'N/A'}</td><td className="p-3">${c.ledger_balance}</td></tr>
+                            ))}
+                            {backupPreview.customers?.filter(c => c.user_id === selectedUserForDetails.id).length === 0 && (
+                              <tr><td colSpan={3} className="p-4 text-center text-gray-500">No customers found</td></tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
+                      <h4 className="font-bold text-gray-800 mb-4 border-b pb-2">Cash Flow</h4>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm text-left">
+                          <thead className="bg-gray-50 text-gray-500">
+                            <tr><th className="p-3">Date</th><th className="p-3">Type</th><th className="p-3">Category</th><th className="p-3">Amount</th></tr>
+                          </thead>
+                          <tbody>
+                            {backupPreview.cash_flows?.filter(cf => cf.user_id === selectedUserForDetails.id).map(cf => (
+                              <tr key={cf.id} className="border-b border-gray-50"><td className="p-3">{new Date(cf.date).toLocaleDateString()}</td><td className="p-3 capitalize">{cf.type}</td><td className="p-3">{cf.category}</td><td className="p-3">${cf.amount}</td></tr>
+                            ))}
+                            {(!backupPreview.cash_flows || backupPreview.cash_flows?.filter(cf => cf.user_id === selectedUserForDetails.id).length === 0) && (
+                              <tr><td colSpan={4} className="p-4 text-center text-gray-500">No cash flow records found</td></tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <h3 className="text-lg font-bold text-gray-900 mb-6">Store Data Overview</h3>
+                  <div className="space-y-4">
+                    {backupPreview.users.map((u) => {
+                      const uProducts = backupPreview.products?.filter(p => p.user_id === u.id) || [];
+                      const uSales = backupPreview.sales?.filter(s => s.user_id === u.id) || [];
+                      const uCustomers = backupPreview.customers?.filter(c => c.user_id === u.id) || [];
+
+                      if (u.email === 'hananirfan85@gmail.com') return null;
+
+                      return (
+                        <div key={u.id} className="bg-gray-50 border border-gray-200 rounded-lg p-5">
+                          <div className="flex justify-between items-center mb-4">
+                            <div>
+                              <div className="font-semibold text-gray-900">{u.email}</div>
+                              <div className="text-xs font-mono text-gray-500 mt-1">ID: ...{u.id.substring(u.id.length - 8)}</div>
+                            </div>
+                            <button
+                              onClick={() => setSelectedUserForDetails(u)}
+                              className="px-4 py-2 bg-indigo-50 border border-indigo-100 hover:bg-indigo-100 text-indigo-700 font-medium text-sm rounded-lg transition-colors"
+                            >
+                              View Detail Pages
+                            </button>
+                          </div>
+                          <div className="grid grid-cols-3 gap-4 text-sm mt-4">
+                            <div className="bg-white p-3 rounded shadow-sm border border-gray-100">
+                              <div className="text-gray-500">Products</div>
+                              <div className="text-xl font-bold text-indigo-600">{uProducts.length}</div>
+                            </div>
+                            <div className="bg-white p-3 rounded shadow-sm border border-gray-100">
+                              <div className="text-gray-500">Sales Records</div>
+                              <div className="text-xl font-bold text-emerald-600">{uSales.length}</div>
+                            </div>
+                            <div className="bg-white p-3 rounded shadow-sm border border-gray-100">
+                              <div className="text-gray-500">Customers</div>
+                              <div className="text-xl font-bold text-blue-600">{uCustomers.length}</div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
             </div>
           )}
         </div>
