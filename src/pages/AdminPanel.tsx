@@ -64,11 +64,40 @@ export default function AdminPanel() {
   const [newRoleStr, setNewRoleStr] = useState<string>("");
   const [replyText, setReplyText] = useState<Record<string, string>>({});
 
+  const [backupPreview, setBackupPreview] = useState<{
+    users: AuthUser[];
+    products: any[];
+    sales: any[];
+    customers: any[];
+  } | null>(null);
+
+  const fetchBackupPreview = async () => {
+    setLoading(true);
+    try {
+      const { data: users } = await supabase.rpc('get_all_users_with_roles');
+      const { data: products } = await supabase.from('products').select('*');
+      const { data: sales } = await supabase.from('sales').select('*');
+      const { data: customers } = await supabase.from('customers').select('*');
+
+      setBackupPreview({
+        users: users || [],
+        products: products || [],
+        sales: sales || [],
+        customers: customers || []
+      });
+    } catch (err: any) {
+      console.error(err);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
-    if (activeTab === "clients") {
+    if (activeTab === 'clients') {
       fetchUsers();
-    } else {
+    } else if (activeTab === 'messages') {
       fetchMessages();
+    } else if (activeTab === 'backup') {
+      fetchBackupPreview();
     }
   }, [activeTab]);
 
@@ -491,23 +520,72 @@ $$ LANGUAGE plpgsql;
           )}
         </div>
       ) : activeTab === "backup" ? (
-        <div className="bg-white border border-gray-100 shadow-sm rounded-xl p-8 text-center max-w-2xl mx-auto mt-8">
-          <Database className="mx-auto text-indigo-500 mb-6" size={48} />
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Master Database Backup & Export
-          </h2>
-          <p className="text-gray-600 mb-8 max-w-md mx-auto">
-            Export all system records, products, inventory, users, and
-            historical sale ledgers in a compressed JSON format for safekeeping
-            and compliance auditing.
-          </p>
-          <button
-            onClick={handleBackup}
-            disabled={loading}
-            className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white rounded-xl font-bold transition-all shadow-md active:scale-95"
-          >
-            {loading ? "Generating Export..." : "Download Full JSON Backup"}
-          </button>
+        <div className="bg-white border border-gray-100 shadow-sm rounded-xl p-8 max-w-5xl mx-auto mt-8">
+          <div className="text-center mb-8">
+            <Database className="mx-auto text-indigo-500 mb-6" size={48} />
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Master Database Backup & Export
+            </h2>
+            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+              Export all system records, products, inventory, users, and
+              historical sale ledgers in a compressed JSON format for safekeeping
+              and compliance auditing.
+            </p>
+            <button
+              onClick={handleBackup}
+              disabled={loading}
+              className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 text-white rounded-xl font-bold transition-all shadow-md active:scale-95 mb-6"
+            >
+              {loading ? "Processing..." : "Download Full JSON Backup"}
+            </button>
+            <button
+              onClick={fetchBackupPreview}
+              disabled={loading}
+              className="px-4 py-2 ml-4 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 text-gray-700 rounded-lg font-medium transition-colors"
+            >
+              Refresh Preview
+            </button>
+          </div>
+
+          {backupPreview && (
+            <div className="mt-8 border-t border-gray-100 pt-8">
+              <h3 className="text-lg font-bold text-gray-900 mb-6">Store Data Overview</h3>
+              <div className="space-y-4">
+                {backupPreview.users.map((u) => {
+                  const uProducts = backupPreview.products.filter(p => p.user_id === u.id);
+                  const uSales = backupPreview.sales.filter(s => s.user_id === u.id);
+                  const uCustomers = backupPreview.customers.filter(c => c.user_id === u.id);
+
+                  if (u.email === 'hananirfan85@gmail.com') return null;
+
+                  return (
+                    <div key={u.id} className="bg-gray-50 border border-gray-200 rounded-lg p-5">
+                      <div className="flex justify-between items-center mb-4">
+                        <div className="font-semibold text-gray-900">{u.email}</div>
+                        <div className="text-xs font-mono text-gray-500 bg-white px-2 py-1 rounded border border-gray-200">
+                          ID: ...{u.id.substring(u.id.length - 8)}
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-4 text-sm">
+                        <div className="bg-white p-3 rounded shadow-sm border border-gray-100">
+                          <div className="text-gray-500">Products</div>
+                          <div className="text-xl font-bold text-indigo-600">{uProducts.length}</div>
+                        </div>
+                        <div className="bg-white p-3 rounded shadow-sm border border-gray-100">
+                          <div className="text-gray-500">Sales Records</div>
+                          <div className="text-xl font-bold text-emerald-600">{uSales.length}</div>
+                        </div>
+                        <div className="bg-white p-3 rounded shadow-sm border border-gray-100">
+                          <div className="text-gray-500">Customers</div>
+                          <div className="text-xl font-bold text-blue-600">{uCustomers.length}</div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="bg-white border border-gray-100 shadow-sm rounded-xl overflow-hidden">

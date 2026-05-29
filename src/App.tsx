@@ -21,6 +21,7 @@ import Settings from "./pages/Settings";
 import AdminPanel from "./pages/AdminPanel";
 import FeaturePage from "./pages/FeaturePage";
 import About from "./pages/About";
+import HelpCenter from "./pages/HelpCenter";
 import Terms from "./pages/Terms";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ContactAdmin from "./pages/ContactAdmin";
@@ -184,6 +185,7 @@ export default function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/docs" element={<Documentation />} />
           <Route path="/about" element={<About />} />
+          <Route path="/help" element={<HelpCenter />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/disclaimer" element={<Disclaimer />} />

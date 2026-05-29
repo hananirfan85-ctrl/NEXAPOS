@@ -490,45 +490,48 @@ export default function Inventory() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Unit
                   </label>
-                  <select
-                    value={formData.unit}
-                    onChange={(e) =>
-                      setFormData({ ...formData, unit: e.target.value })
-                    }
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
-                  >
-                    <option value="">Select Unit</option>
-                    {storeType === "general" && (
-                      <>
-                        <option value="pcs">Pieces (pcs)</option>
-                        <option value="kg">Kilograms (kg)</option>
-                        <option value="g">Grams (g)</option>
-                        <option value="boxes">Boxes</option>
-                        <option value="packs">Packs</option>
-                        <option value="liters">Liters</option>
-                      </>
-                    )}
-                    {storeType === "medical" && (
-                      <>
-                        <option value="strips">Strips</option>
-                        <option value="tablets">Tablets</option>
-                        <option value="bottles">Bottles</option>
-                        <option value="syrups">Syrups</option>
-                        <option value="injections">Injections</option>
-                        <option value="tubes">Tubes</option>
-                      </>
-                    )}
-                    {storeType === "other" && (
-                      <>
-                        <option value="items">Items</option>
-                        <option value="units">Units</option>
-                        <option value="lbs">Pounds (lbs)</option>
-                        <option value="meters">Meters</option>
-                        <option value="yards">Yards</option>
-                        <option value="tons">Tons</option>
-                      </>
-                    )}
-                  </select>
+                  {storeType === "other" ? (
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. dozens, bags, pieces"
+                      value={formData.unit}
+                      onChange={(e) =>
+                        setFormData({ ...formData, unit: e.target.value })
+                      }
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+                    />
+                  ) : (
+                    <select
+                      value={formData.unit}
+                      onChange={(e) =>
+                        setFormData({ ...formData, unit: e.target.value })
+                      }
+                      className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+                    >
+                      <option value="">Select Unit</option>
+                      {storeType === "general" && (
+                        <>
+                          <option value="pcs">Pieces (pcs)</option>
+                          <option value="kg">Kilograms (kg)</option>
+                          <option value="g">Grams (g)</option>
+                          <option value="boxes">Boxes</option>
+                          <option value="packs">Packs</option>
+                          <option value="liters">Liters</option>
+                        </>
+                      )}
+                      {storeType === "medical" && (
+                        <>
+                          <option value="strips">Strips</option>
+                          <option value="tablets">Tablets</option>
+                          <option value="bottles">Bottles</option>
+                          <option value="syrups">Syrups</option>
+                          <option value="injections">Injections</option>
+                          <option value="tubes">Tubes</option>
+                        </>
+                      )}
+                    </select>
+                  )}
                 </div>
               </div>
 

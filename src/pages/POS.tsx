@@ -159,6 +159,37 @@ export default function POS() {
     setProcessing(false);
   };
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Prevent F9 default behavior
+      if (e.key === "F9") {
+        e.preventDefault();
+        handleCheckoutClick();
+      }
+      
+      if (e.key === "Escape") {
+        setShowPaymentModal(false);
+        setShowClearCart(false);
+        setShowReceipt(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [cartTotal, cart.length]);
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && filteredProducts.length > 0) {
+      e.preventDefault();
+      addToCart(filteredProducts[0]);
+      setSearchQuery("");
+      
+      // Auto-focus the search bar again to continue adding items
+      setTimeout(() => {
+        (e.target as HTMLInputElement).focus();
+      }, 0);
+    }
+  };
+
   const handlePrint = () => {
     if (!completedSale) return;
 
@@ -310,9 +341,10 @@ export default function POS() {
             />
             <input
               type="text"
-              placeholder="Search products to add..."
+              placeholder="Search products to add (Press Enter to add first)"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
               className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all"
             />
           </div>
@@ -465,7 +497,7 @@ export default function POS() {
             disabled={cart.length === 0 || processing}
             className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98] disabled:bg-gray-300 disabled:active:scale-100 text-white font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2"
           >
-            {processing ? "Processing..." : "Checkout"}
+            {processing ? "Processing..." : "Checkout [F9]"}
             {!processing && (
               <span className="opacity-70 font-normal">
                 | {formatCurrency(cartTotal)}
