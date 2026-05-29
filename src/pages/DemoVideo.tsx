@@ -24,7 +24,8 @@ export default function DemoVideo() {
           <div className="aspect-video bg-black/60 rounded-xl overflow-hidden shadow-2xl relative flex items-center justify-center border border-white/10">
             {/* Placeholder for YouTube iframe */}
             <p className="text-gray-500 font-mono text-sm max-w-sm px-6">
-<iframe width="560" height="315" src="https://www.youtube.com/embed/8paPp1OU7jc?si=b1oe5KzTuwcbdsz_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>          </div>
+              <placeholder>Here is he complete guide how to use the software.
+              </placeholder>
         </div>
 
         <div className="mt-16 bg-white/5 border border-white/10 p-8 rounded-2xl text-left">
