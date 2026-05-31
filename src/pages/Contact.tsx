@@ -10,6 +10,8 @@ import {
   Clock,
 } from "lucide-react";
 
+import { PublicFooter } from "../components/layout/PublicFooter";
+
 export default function Contact() {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -290,6 +292,7 @@ export default function Contact() {
           </div>
         </section>
       </div>
+      <PublicFooter />
     </div>
   );
 }

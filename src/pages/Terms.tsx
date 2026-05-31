@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, FileText, CheckCircle } from "lucide-react";
+import { PublicFooter } from "../components/layout/PublicFooter";
 
 export default function Terms() {
   return (
@@ -138,6 +139,7 @@ export default function Terms() {
           </section>
         </div>
       </div>
+      <PublicFooter />
     </div>
   );
 }

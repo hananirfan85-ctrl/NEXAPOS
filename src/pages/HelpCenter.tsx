@@ -1,5 +1,6 @@
 import React from "react";
 import { PublicNavbar } from "../components/layout/PublicNavbar";
+import { PublicFooter } from "../components/layout/PublicFooter";
 import { SEO } from "../components/SEO";
 
 export default function HelpCenter() {
@@ -692,6 +693,7 @@ export default function HelpCenter() {
           </section>
         </article>
       </main>
+      <PublicFooter />
     </div>
   );
 }

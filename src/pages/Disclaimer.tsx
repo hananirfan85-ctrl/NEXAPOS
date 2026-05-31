@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ShieldAlert } from "lucide-react";
+import { PublicFooter } from "../components/layout/PublicFooter";
 
 export default function Disclaimer() {
   return (
@@ -125,6 +126,7 @@ export default function Disclaimer() {
           </p>
         </div>
       </div>
+      <PublicFooter />
     </div>
   );
 }

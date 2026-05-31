@@ -82,22 +82,20 @@ export default function Dashboard() {
       }
 
       // Fetch Products Info
-      const { data: products } = await supabase
+      const { count: totalProd } = await supabase
         .from("products")
-        .select("stock");
-      let totalProd = 0;
-      let lowStockCount = 0;
+        .select("*", { count: "exact", head: true });
 
-      if (products) {
-        totalProd = products.length;
-        lowStockCount = products.filter((p) => p.stock <= 5).length;
-      }
+      const { count: lowStockCount } = await supabase
+        .from("products")
+        .select("*", { count: "exact", head: true })
+        .lte("stock", 5);
 
       setStats({
         todaySales: salesTotal,
         todayProfit: profitTotal,
-        totalProducts: totalProd,
-        lowStock: lowStockCount,
+        totalProducts: totalProd || 0,
+        lowStock: lowStockCount || 0,
       });
     } catch (err: any) {
       console.error("Dashboard fetch error:", err.message);

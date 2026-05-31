@@ -5,28 +5,34 @@ import { Link } from "react-router-dom";
 export default function Documentation() {
   const sections = [
     {
-      title: "Quick Start",
+      title: "Platform Overview",
       icon: <Zap className="w-6 h-6 text-indigo-400" />,
       content:
-        "NEXA POS is designed as an immersive Point of Sale and Inventory Management tool. To begin, register for an account. By default, new accounts are held in a pending state until an owner or Super Admin approves access from the internal settings panel.",
+        "NEXA POS is an enterprise-grade cloud-native point of sale and comprehensive retail management suite. Engineered for speed and high availability, it guarantees real-time synchronization of sales, inventory, and analytics across all your connected branches. Our architecture utilizes React, Node, and Supabase to provide an offline-first resilient topology. This means that if an individual store's internet connection drops, the local cashier terminals immediately pivot to IndexedDB local caching, securely queuing all transaction ledgers and stock decrementations. Once the network is restored, the synchronization engine automatically flushes the queue to the master database. To begin deploying this infrastructure in your business, the first step requires an administrator to create a master account. Upon creation, you have complete access to the central dashboard, whereas all subsequent employee signups will be placed in a 'pending approval' state until you manually authorize their access level.",
     },
     {
-      title: "Inventory Matrix",
+      title: "Inventory Management Protocol",
       icon: <BookOpen className="w-6 h-6 text-indigo-400" />,
       content:
-        "The Inventory Matrix provides real-time stock levels. Each terminal automatically syncs its local cache with the primary Supabase database. You can track high-volume items, set low-stock thresholds, and instantly update pricing globally.",
+        "At the core of the NEXA POS platform is our rigorous Inventory Matrix. Managing huge product catalogs can be overwhelming, which is why our inventory interface supports rapid bulk loading, granular categorization, and automated low-stock threshold alerting. When you register a new product, you define its universal SKU (Stock Keeping Unit), bar-code identifier (if applicable), base unit cost, and final retail price. The system automatically calculates gross margin percentages. Because the inventory and POS systems communicate seamlessly in real time, every successful checkout at the counter instantly subtracts from the globally available item count, ensuring that multiple branches never accidentally oversell existing physical stock. For warehouse operations, the stock adjustment module logs chronological updates preventing undetected shrinkage or administrative mismanagement.",
     },
     {
-      title: "Point of Sale (POS)",
+      title: "Operating the Point of Sale Interface",
       icon: <Terminal className="w-6 h-6 text-indigo-400" />,
       content:
-        "The POS interface is built for speed. It features sub-50ms latency for scanning or selecting items. Transactions are securely hashed and logged immutably. If the network drops, the POS enters 'Offline Mode' and queues transactions for sync upon reconnection.",
+        "The Point of Sale (POS) interface is the highest traffic junction of your entire business. Therefore, we optimized it for absolute microsecond latency. The cart interface supports both manual search typing with a sub-50ms debounce rate, or instantaneous laser barcode scanning. Your floor cashiers can add items, rapidly alter quantities, and apply discretionary discounts (if enabled under their permission set). When concluding a sale, simply enter the amount tendered to view the exact change required. Once completed, a pristine digital receipt is immediately generated and securely written to the master SQL transaction ledger. For multi-language demographics, the cash drawer operation supports visual iconography ensuring that temporary or seasonal staff can operate the checkout lanes with practically zero training curves.",
     },
     {
-      title: "Admin & Security",
+      title: "Security & Administrative Controls",
       icon: <Shield className="w-6 h-6 text-indigo-400" />,
       content:
-        "Only verified administrators can access the Master Dashboard, approve new employee accounts, or view global metrics. NEXA POS utilizes 256-bit encryption for all network traffic and leverages strict RLS (Row Level Security) policies.",
+        "Information security is non-negotiable. The Master Dashboard utilizes Role-Based Access Control (RBAC) to ensure that sensitive financial telemetry—such as net margin reports, operational cashflow loss, and supplier contact lists—are kept strictly confined to executive personnel. 'Cashier' accounts are strictly sandboxed, meaning they can only execute sales, view active inventory quantities, and process refunds. They absolutely cannot access macro-level analytics or modify core system settings. All data transfer is wrapped in 256-bit TLS encryption, guarding against localized network sniffing, and our underlying database enforces strict Row Level Security (RLS) policies. Even if a bad actor attempts to forge an API call, the database will instantly drop the request if the cryptographic JWT signature does not match an authorized administrative entity.",
+    },
+    {
+      title: "Deployment & Maintenance Strategies",
+      icon: <Zap className="w-6 h-6 text-indigo-400" />,
+      content:
+        "Because NEXA POS operates perfectly within a modern browser, your hardware requirements are incredibly slim. Deploying the system across a new franchise simply requires any competent computing device—a tablet, a desktop PC, or a laptop—running a standard updated browser. No complex local software installations or networking voodoo is required. Furthermore, when our engineering team pushes system updates, bug fixes, or entirely new features, your terminals receive the upgrade instantly upon page refresh. We handle the heavy lifting regarding database maintenance, backups, and server redundancy, allowing you to focus entirely on expanding your retail empire.",
     },
   ];
 

@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { SEO } from "../components/SEO";
+import { PublicFooter } from "../components/layout/PublicFooter";
 
 const features = {
   billing: {
@@ -511,6 +512,7 @@ export default function FeaturePage() {
           </div>
         </div>
       </div>
+      <PublicFooter />
     </div>
   );
 }

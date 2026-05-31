@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { SEO } from "../components/SEO";
 
 
+import { PublicFooter } from "../components/layout/PublicFooter";
+
 export default function About() {
   return (
     <div className="min-h-screen bg-[#030305] text-white selection:bg-indigo-500/30">
@@ -591,6 +593,7 @@ export default function About() {
           </div>
         </div>
       </div>
+      <PublicFooter />
     </div>
   );
 }

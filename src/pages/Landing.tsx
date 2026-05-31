@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { PublicNavbar } from "../components/layout/PublicNavbar";
+import { PublicFooter } from "../components/layout/PublicFooter";
 import {
   ArrowRight,
   BarChart3,

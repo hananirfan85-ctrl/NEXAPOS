@@ -2,6 +2,7 @@ import React from "react";
 import { ArrowLeft, Check, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SEO } from "../components/SEO";
+import { PublicFooter } from "../components/layout/PublicFooter";
 
 export default function Pricing() {
   const plans = [
@@ -410,6 +411,7 @@ export default function Pricing() {
           </div>
         </div>
       </div>
+      <PublicFooter />
     </div>
   );
 }

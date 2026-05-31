@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { ChevronDown, Menu, X, Download, HelpCircle } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ChevronDown, Menu, X, Download, HelpCircle, Search } from "lucide-react";
 import { usePwaInstall } from "../../hooks/usePwaInstall";
 
 export function PublicNavbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { deferredPrompt, initiateInstall } = usePwaInstall();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -120,6 +121,24 @@ export function PublicNavbar() {
 
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-4">
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                const q = formData.get('q');
+                if (q) navigate(`/help?q=${encodeURIComponent(q.toString())}`);
+              }} 
+              className="relative group flex items-center"
+            >
+              <Search className="absolute left-3 text-gray-400 group-focus-within:text-indigo-400" size={16} />
+              <input 
+                type="search" 
+                name="q" 
+                placeholder="Search..." 
+                className="bg-white/5 border border-white/10 rounded-full py-1.5 pl-9 pr-4 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white/10 transition-all w-32 focus:w-48"
+                aria-label="Search"
+              />
+            </form>
             <Link
               to="/login"
               className="text-sm font-sans font-medium text-gray-300 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded-md px-3 py-2"

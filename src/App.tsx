@@ -4,31 +4,34 @@ import { Toaster, toast } from "react-hot-toast";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { supabase } from "./lib/supabase";
 import { AppLayout } from "./components/layout/AppLayout";
-import Landing from "./pages/Landing";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Documentation from "./pages/Documentation";
-import Pricing from "./pages/Pricing";
-import Dashboard from "./pages/Dashboard";
-import Inventory from "./pages/Inventory";
-import POS from "./pages/POS";
-import Sales from "./pages/Sales";
-import Reports from "./pages/Reports";
-import Records from "./pages/Records";
-import Customers from "./pages/Customers";
-import CashFlow from "./pages/CashFlow";
-import Settings from "./pages/Settings";
-import AdminPanel from "./pages/AdminPanel";
-import FeaturePage from "./pages/FeaturePage";
-import About from "./pages/About";
-import HelpCenter from "./pages/HelpCenter";
-import Terms from "./pages/Terms";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import ContactAdmin from "./pages/ContactAdmin";
-import Contact from "./pages/Contact";
-import Disclaimer from "./pages/Disclaimer";
-
-import DemoVideo from "./pages/DemoVideo";
+import { lazy, Suspense } from "react";
+const Sitemap = lazy(() => import("./pages/Sitemap"));
+const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
+const Landing = lazy(() => import("./pages/Landing"));
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const Documentation = lazy(() => import("./pages/Documentation"));
+const Pricing = lazy(() => import("./pages/Pricing"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Inventory = lazy(() => import("./pages/Inventory"));
+const POS = lazy(() => import("./pages/POS"));
+const Sales = lazy(() => import("./pages/Sales"));
+const Reports = lazy(() => import("./pages/Reports"));
+const Records = lazy(() => import("./pages/Records"));
+const Customers = lazy(() => import("./pages/Customers"));
+const CashFlow = lazy(() => import("./pages/CashFlow"));
+const Settings = lazy(() => import("./pages/Settings"));
+const AdminPanel = lazy(() => import("./pages/AdminPanel"));
+const FeaturePage = lazy(() => import("./pages/FeaturePage"));
+const About = lazy(() => import("./pages/About"));
+const HelpCenter = lazy(() => import("./pages/HelpCenter"));
+const Terms = lazy(() => import("./pages/Terms"));
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const ContactAdmin = lazy(() => import("./pages/ContactAdmin"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Disclaimer = lazy(() => import("./pages/Disclaimer"));
+const DemoVideo = lazy(() => import("./pages/DemoVideo"));
+import { CookieConsent } from "./components/CookieConsent";
 
 // Protected Route wrapper
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -182,50 +185,55 @@ export default function App() {
     <AuthProvider>
       <Toaster position="top-right" />
       <BrowserRouter>
-        <Routes>
-          <Route path="/home" element={<Landing />} />
-          <Route path="/demo" element={<DemoVideo />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/docs" element={<Documentation />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/help" element={<HelpCenter />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/disclaimer" element={<Disclaimer />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/features/:featureId" element={<FeaturePage />} />
+        <CookieConsent />
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-gray-50"><div className="w-8 h-8 flex border-t-2 border-b-2 border-indigo-600 rounded-full animate-spin"></div></div>}>
+          <Routes>
+            <Route path="/home" element={<Landing />} />
+            <Route path="/demo" element={<DemoVideo />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/docs" element={<Documentation />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/help" element={<HelpCenter />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/disclaimer" element={<Disclaimer />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/sitemap" element={<Sitemap />} />
+            <Route path="/cookie-policy" element={<CookiePolicy />} />
+            <Route path="/features/:featureId" element={<FeaturePage />} />
 
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <AppLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route index element={<Dashboard />} />
-            <Route path="inventory" element={<Inventory />} />
-            <Route path="pos" element={<POS />} />
-            <Route path="sales" element={<Sales />} />
-            <Route path="cashflow" element={<CashFlow />} />
-            <Route path="customers" element={<Customers />} />
-            <Route path="reports" element={<Reports />} />
-            <Route path="records" element={<Records />} />
-            <Route path="settings" element={<Settings />} />
-            <Route path="contact-admin" element={<ContactAdmin />} />
             <Route
-              path="admin"
+              path="/"
               element={
-                <AdminRoute>
-                  <AdminPanel />
-                </AdminRoute>
+                <ProtectedRoute>
+                  <AppLayout />
+                </ProtectedRoute>
               }
-            />
-          </Route>
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
+            >
+              <Route index element={<Dashboard />} />
+              <Route path="inventory" element={<Inventory />} />
+              <Route path="pos" element={<POS />} />
+              <Route path="sales" element={<Sales />} />
+              <Route path="cashflow" element={<CashFlow />} />
+              <Route path="customers" element={<Customers />} />
+              <Route path="reports" element={<Reports />} />
+              <Route path="records" element={<Records />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="contact-admin" element={<ContactAdmin />} />
+              <Route
+                path="admin"
+                element={
+                  <AdminRoute>
+                    <AdminPanel />
+                  </AdminRoute>
+                }
+              />
+            </Route>
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </AuthProvider>
   );
