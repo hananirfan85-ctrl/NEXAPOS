@@ -29,6 +29,7 @@ import Contact from "./pages/Contact";
 import Disclaimer from "./pages/Disclaimer";
 
 import DemoVideo from "./pages/DemoVideo";
+import { OnlineOnlyWrap } from "./components/OnlineOnlyWrap";
 
 // Protected Route wrapper
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -183,19 +184,19 @@ export default function App() {
       <Toaster position="top-right" />
       <BrowserRouter>
         <Routes>
-          <Route path="/home" element={<Landing />} />
-          <Route path="/demo" element={<DemoVideo />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/docs" element={<Documentation />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/help" element={<HelpCenter />} />
-          <Route path="/terms" element={<Terms />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/disclaimer" element={<Disclaimer />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/features/:featureId" element={<FeaturePage />} />
+          <Route path="/home" element={<OnlineOnlyWrap><Landing /></OnlineOnlyWrap>} />
+          <Route path="/demo" element={<OnlineOnlyWrap><DemoVideo /></OnlineOnlyWrap>} />
+          <Route path="/login" element={<OnlineOnlyWrap><Login /></OnlineOnlyWrap>} />
+          <Route path="/signup" element={<OnlineOnlyWrap><Signup /></OnlineOnlyWrap>} />
+          <Route path="/docs" element={<OnlineOnlyWrap><Documentation /></OnlineOnlyWrap>} />
+          <Route path="/about" element={<OnlineOnlyWrap><About /></OnlineOnlyWrap>} />
+          <Route path="/help" element={<OnlineOnlyWrap><HelpCenter /></OnlineOnlyWrap>} />
+          <Route path="/terms" element={<OnlineOnlyWrap><Terms /></OnlineOnlyWrap>} />
+          <Route path="/privacy-policy" element={<OnlineOnlyWrap><PrivacyPolicy /></OnlineOnlyWrap>} />
+          <Route path="/disclaimer" element={<OnlineOnlyWrap><Disclaimer /></OnlineOnlyWrap>} />
+          <Route path="/contact" element={<OnlineOnlyWrap><Contact /></OnlineOnlyWrap>} />
+          <Route path="/pricing" element={<OnlineOnlyWrap><Pricing /></OnlineOnlyWrap>} />
+          <Route path="/features/:featureId" element={<OnlineOnlyWrap><FeaturePage /></OnlineOnlyWrap>} />
 
           <Route
             path="/"
@@ -211,10 +212,10 @@ export default function App() {
             <Route path="sales" element={<Sales />} />
             <Route path="cashflow" element={<CashFlow />} />
             <Route path="customers" element={<Customers />} />
-            <Route path="reports" element={<Reports />} />
-            <Route path="records" element={<Records />} />
-            <Route path="settings" element={<Settings />} />
-            <Route path="contact-admin" element={<ContactAdmin />} />
+            <Route path="reports" element={<OnlineOnlyWrap><Reports /></OnlineOnlyWrap>} />
+            <Route path="records" element={<OnlineOnlyWrap><Records /></OnlineOnlyWrap>} />
+            <Route path="settings" element={<OnlineOnlyWrap><Settings /></OnlineOnlyWrap>} />
+            <Route path="contact-admin" element={<OnlineOnlyWrap><ContactAdmin /></OnlineOnlyWrap>} />
             <Route
               path="admin"
               element={
