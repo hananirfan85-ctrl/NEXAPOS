@@ -24,13 +24,25 @@ export default function Dashboard() {
   // Store Setup State
   const [showSetupModal, setShowSetupModal] = useState(false);
   const [storeType, setStoreType] = useState("general");
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
   useEffect(() => {
-    if (user) fetchDashboardData();
-  }, [user]);
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (user && !isOffline) fetchDashboardData();
+  }, [user, isOffline]);
 
   const fetchDashboardData = async () => {
-    if (!navigator.onLine) {
+    if (isOffline) {
       setLoading(false);
       return;
     }
@@ -110,18 +122,28 @@ export default function Dashboard() {
 
   return (
     <div className="h-full flex flex-col space-y-6">
-      {!navigator.onLine && (
-        <div className="mb-2 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md">
-          <div className="flex">
-            <div className="flex-shrink-0">
-              <AlertTriangle className="h-5 w-5 text-yellow-400" />
+      {isOffline && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden p-6 animate-in fade-in zoom-in duration-200">
+            <div className="flex justify-center mb-4">
+              <div className="bg-yellow-100 p-4 rounded-full text-yellow-600">
+                <AlertTriangle size={32} />
+              </div>
             </div>
-            <div className="ml-3">
-              <p className="text-sm text-yellow-700 font-medium">
-                You are currently offline. Dashboard statistics cannot be
-                refreshed, but you can continue using POS billing and other
-                features.
-              </p>
+            <h3 className="text-xl font-bold text-gray-900 mb-2 text-center">
+              You are offline
+            </h3>
+            <p className="text-gray-500 text-sm text-center mb-6">
+              You cannot be able to use dashboard until you are online. Please
+              connect to the internet and use the dashboard online.
+            </p>
+            <div className="flex justify-center gap-3">
+              <Link
+                to="/pos"
+                className="w-full py-3.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-sm transition-all text-center"
+              >
+                Go to POS (Offline Mode)
+              </Link>
             </div>
           </div>
         </div>
