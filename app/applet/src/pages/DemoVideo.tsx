@@ -60,7 +60,9 @@ export default function DemoVideo() {
                  {/* Visual placeholder background, matching brand */}
                  <div className="absolute inset-0 opacity-20 bg-gradient-to-br from-indigo-500 to-purple-600"></div>
 
-                 {<iframe width="560" height="315" src="https://www.youtube.com/embed/8paPp1OU7jc?si=b1oe5KzTuwcbdsz_" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>}
+                 {/* Real video tag would go here, e.g.:
+                 <iframe className="absolute top-0 left-0 w-full h-full z-20" src="..." frameBorder="0" allowFullScreen></iframe> 
+                 */}
               </div>
             </div>
 

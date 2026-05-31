@@ -1,22 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingCart, DollarSign, BarChart3, Clock, LogOut, Search, Menu, X, Download, WifiOff, Settings, Home, Users, Hexagon, MessageSquare } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import { supabase } from '../../lib/supabase';
-import toast from 'react-hot-toast';
-import { usePwaInstall } from '../../hooks/usePwaInstall';
+import React, { useState, useEffect } from "react";
+import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  DollarSign,
+  BarChart3,
+  Clock,
+  LogOut,
+  Search,
+  Menu,
+  X,
+  Download,
+  WifiOff,
+  Settings,
+  Home,
+  Users,
+  Hexagon,
+  MessageSquare,
+} from "lucide-react";
+import { useAuth } from "../../contexts/AuthContext";
+import { supabase } from "../../lib/supabase";
+import toast from "react-hot-toast";
+import { usePwaInstall } from "../../hooks/usePwaInstall";
 
 const navItems = [
-  { name: 'Dashboard', path: '/', icon: LayoutDashboard },
-  { name: 'Inventory', path: '/inventory', icon: Package },
-  { name: 'POS Billing', path: '/pos', icon: ShoppingCart },
-  { name: 'Sales', path: '/sales', icon: DollarSign },
-  { name: 'Cash Flow', path: '/cashflow', icon: DollarSign },
-  { name: 'Customers', path: '/customers', icon: Users },
-  { name: 'Reports', path: '/reports', icon: BarChart3 },
-  { name: 'Records', path: '/records', icon: Clock },
-  { name: 'Settings', path: '/settings', icon: Settings },
-  { name: 'Contact Admin', path: '/contact-admin', icon: MessageSquare }
+  { name: "Dashboard", path: "/", icon: LayoutDashboard },
+  { name: "Inventory", path: "/inventory", icon: Package },
+  { name: "POS Billing", path: "/pos", icon: ShoppingCart },
+  { name: "Sales", path: "/sales", icon: DollarSign },
+  { name: "Cash Flow", path: "/cashflow", icon: DollarSign },
+  { name: "Customers", path: "/customers", icon: Users },
+  { name: "Reports", path: "/reports", icon: BarChart3 },
+  { name: "Records", path: "/records", icon: Clock },
+  { name: "Settings", path: "/settings", icon: Settings },
+  { name: "Contact Admin", path: "/contact-admin", icon: MessageSquare },
 ];
 
 export function AppLayout() {
@@ -24,18 +42,10 @@ export function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
+
   // PWA & Offline State
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
-  
-  const offlineRestrictedPaths = ['/pos', '/inventory', '/sales', '/cashflow', '/reports', '/records', '/customers'];
 
-  useEffect(() => {
-    if (isOffline && offlineRestrictedPaths.some(p => location.pathname.startsWith(p))) {
-      navigate('/');
-      toast.error('You are offline. Access to this feature is disabled until you reconnect.');
-    }
-  }, [isOffline, location.pathname, navigate]);
   const [showInstallModal, setShowInstallModal] = useState(false);
   const { deferredPrompt, initiateInstall } = usePwaInstall();
 
@@ -43,156 +53,163 @@ export function AppLayout() {
     const handleOnline = () => setIsOffline(false);
     const handleOffline = () => setIsOffline(true);
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, []);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Ignore if typing in an input
-      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      ) {
         return;
       }
-      
+
       if (e.altKey) {
         switch (e.key.toLowerCase()) {
-          case 'd':
+          case "d":
             e.preventDefault();
-            navigate('/');
-            toast.success('Navigated to Dashboard');
+            navigate("/");
+            toast.success("Navigated to Dashboard");
             break;
-          case 'p':
+          case "p":
             e.preventDefault();
-            navigate('/pos');
-            toast.success('Navigated to POS Billing');
+            navigate("/pos");
+            toast.success("Navigated to POS Billing");
             break;
-          case 'i':
+          case "i":
             e.preventDefault();
-            navigate('/inventory');
-            toast.success('Navigated to Inventory');
+            navigate("/inventory");
+            toast.success("Navigated to Inventory");
             break;
-          case 's':
+          case "s":
             e.preventDefault();
-            navigate('/sales');
-            toast.success('Navigated to Sales');
+            navigate("/sales");
+            toast.success("Navigated to Sales");
             break;
-          case 'c':
+          case "c":
             e.preventDefault();
-            navigate('/customers');
-            toast.success('Navigated to Customers');
+            navigate("/customers");
+            toast.success("Navigated to Customers");
             break;
         }
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [navigate]);
 
   useEffect(() => {
     const checkLowStock = async () => {
       if (!user) return;
-      
+
       const { data, error } = await supabase
-        .from('products')
-        .select('name, stock')
-        .lte('stock', 5)
-        .order('stock', { ascending: true });
-        
+        .from("products")
+        .select("name, stock")
+        .lte("stock", 5)
+        .order("stock", { ascending: true });
+
       if (!error && data && data.length > 0) {
-        const itemNames = data.map(i => i.name).join(', ');
+        const itemNames = data.map((i) => i.name).join(", ");
         toast.error(
           <div>
             <strong>Low Stock Alert ({data.length})</strong>
             <p className="text-sm mt-1 text-gray-800">{itemNames}</p>
-          </div>, 
+          </div>,
           {
             duration: 8000,
-            position: 'top-right',
-            icon: '⚠️',
+            position: "top-right",
+            icon: "⚠️",
             style: {
-              background: '#FEF2F2',
-              border: '1px solid #F87171',
-              color: '#991B1B'
-            }
-          }
+              background: "#FEF2F2",
+              border: "1px solid #F87171",
+              color: "#991B1B",
+            },
+          },
         );
       }
     };
-    
+
     // Check shortly after mounting to allow other things to render
     const timer = setTimeout(() => {
       checkLowStock();
     }, 2000);
-    
+
     return () => clearTimeout(timer);
   }, [user]);
 
   const handleLogout = async () => {
     await signOut();
-    navigate('/login');
+    navigate("/login");
   };
 
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-indigo-50/50 via-white to-[#f5f5fa] text-gray-900 font-sans overflow-hidden">
-      
       {/* Mobile Overlay */}
       <>
         {isMobileMenuOpen && (
           <div
-          onClick={closeMobileMenu}
+            onClick={closeMobileMenu}
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden"
           />
         )}
       </>
 
       {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 flex flex-col transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 flex flex-col transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}
+      >
         <div className="h-16 flex items-center justify-between px-6 border-b border-gray-200 shrink-0">
           <div className="flex items-center gap-2 text-indigo-600 font-bold text-xl tracking-tight">
-            <img src="/logo.png" alt="NEXA POS Logo" className="h-10 w-auto bg-white p-1 rounded-lg" />
+            <img
+              src="/logo.png"
+              alt="NEXA POS Logo"
+              className="h-10 w-auto bg-white p-1 rounded-lg"
+            />
           </div>
-          <button onClick={closeMobileMenu} className="p-1 text-gray-500 hover:text-gray-700 md:hidden">
+          <button
+            onClick={closeMobileMenu}
+            className="p-1 text-gray-500 hover:text-gray-700 md:hidden"
+          >
             <X size={20} />
           </button>
         </div>
-        
+
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1 hide-scrollbar">
           {navItems.map((item) => {
-            // Only admin can access POS/dashboard stuff if requested, 
+            // Only admin can access POS/dashboard stuff if requested,
             // but for now let's just make sure Admin Panel is only for admin.
             // "admin able to access the dashoboard and other features to use this and admin only access to this email hananirfan85@gmail.com"
-            const isAdminPath = item.path === '/admin';
-            
+            const isAdminPath = item.path === "/admin";
+
             // Remove Customers page ONLY in admin panel account
-            if (user?.email === 'hananirfan85@gmail.com' && item.name === 'Customers') {
+            if (
+              user?.email === "hananirfan85@gmail.com" &&
+              item.name === "Customers"
+            ) {
               return null;
             }
-            
-            const isRestricted = isOffline && offlineRestrictedPaths.includes(item.path);
 
             return (
               <NavLink
                 key={item.name}
-                to={isRestricted ? '#' : item.path}
-                onClick={isRestricted ? (e) => {
-                  e.preventDefault();
-                  toast.error('You are offline. Access to this feature is disabled until you reconnect.');
-                } : closeMobileMenu}
+                to={item.path}
+                onClick={closeMobileMenu}
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
-                    isRestricted 
-                      ? 'text-gray-400 cursor-not-allowed opacity-60' 
-                      : isActive
-                        ? 'bg-indigo-50 text-indigo-700 font-medium'
-                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    isActive
+                      ? "bg-indigo-50 text-indigo-700 font-medium"
+                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                   }`
                 }
               >
@@ -201,29 +218,33 @@ export function AppLayout() {
               </NavLink>
             );
           })}
-          
-          {user?.email === 'hananirfan85@gmail.com' && (
-             <NavLink
-             to="/admin"
-             onClick={closeMobileMenu}
-             className={({ isActive }) =>
-               `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors mt-4 border border-indigo-100 ${
-                 isActive
-                   ? 'bg-indigo-600 text-white font-medium shadow-md'
-                   : 'text-indigo-700 hover:bg-indigo-50 hover:text-indigo-800'
-               }`
-             }
-           >
-             <LayoutDashboard size={20} />
-             Admin Super Panel
-           </NavLink>
+
+          {user?.email === "hananirfan85@gmail.com" && (
+            <NavLink
+              to="/admin"
+              onClick={closeMobileMenu}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors mt-4 border border-indigo-100 ${
+                  isActive
+                    ? "bg-indigo-600 text-white font-medium shadow-md"
+                    : "text-indigo-700 hover:bg-indigo-50 hover:text-indigo-800"
+                }`
+              }
+            >
+              <LayoutDashboard size={20} />
+              Admin Super Panel
+            </NavLink>
           )}
         </nav>
 
         <div className="p-4 border-t border-gray-200 shrink-0">
           <div className="px-3 py-2 mb-2">
-            <p className="text-xs font-medium text-gray-500 uppercase">Account</p>
-            <p className="text-sm font-medium text-gray-900 truncate mt-1">{user?.email}</p>
+            <p className="text-xs font-medium text-gray-500 uppercase">
+              Account
+            </p>
+            <p className="text-sm font-medium text-gray-900 truncate mt-1">
+              {user?.email}
+            </p>
           </div>
           <button
             onClick={handleLogout}
@@ -240,17 +261,21 @@ export function AppLayout() {
         {/* Topbar */}
         <header className="h-[auto] min-h-16 py-2 bg-white border-b border-gray-200 flex flex-wrap sm:flex-nowrap items-center justify-between px-4 sm:px-6 shrink-0 z-30 gap-2 sm:gap-4">
           <div className="flex items-center gap-4 shrink-0">
-            <button 
+            <button
               onClick={() => setIsMobileMenuOpen(true)}
               className="p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-lg md:hidden"
             >
               <Menu size={24} />
             </button>
             <div className="text-indigo-600 font-bold tracking-tight md:hidden flex items-center gap-2 mr-2">
-              <img src="/logo.png" alt="NEXA POS Logo" className="h-8 w-auto bg-white p-1 rounded-lg" />
+              <img
+                src="/logo.png"
+                alt="NEXA POS Logo"
+                className="h-8 w-auto bg-white p-1 rounded-lg"
+              />
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2 sm:gap-3 flex-1 sm:flex-none justify-end overflow-x-auto no-scrollbar shrink-0">
             {isOffline && (
               <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 text-orange-700 rounded-full text-xs font-bold uppercase tracking-wider shrink-0">
@@ -258,8 +283,8 @@ export function AppLayout() {
                 <span className="hidden sm:inline">Offline Mode</span>
               </div>
             )}
-            
-            <button 
+
+            <button
               onClick={() => {
                 if (deferredPrompt) {
                   initiateInstall();
@@ -274,8 +299,8 @@ export function AppLayout() {
               <span className="sm:hidden">Install</span>
             </button>
 
-            <button 
-              onClick={() => navigate('/home')}
+            <button
+              onClick={() => navigate("/home")}
               className="flex items-center gap-2 px-3 py-1.5 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 rounded-lg text-sm font-semibold transition-colors shadow-sm shrink-0"
             >
               <Home size={16} />
@@ -286,8 +311,7 @@ export function AppLayout() {
 
         {/* Page Content */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 relative">
-          <div className="max-w-7xl mx-auto w-full min-h-full"
-          >
+          <div className="max-w-7xl mx-auto w-full min-h-full">
             <Outlet />
           </div>
         </div>
@@ -297,32 +321,58 @@ export function AppLayout() {
       <>
         {showInstallModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col border border-gray-200"
-            >
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col border border-gray-200">
               <div className="p-6 border-b border-gray-200 flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-3">
-                  <img src="/logo.png" alt="NEXA POS Logo" className="h-8 w-auto border rounded-xl" />
-                  <h3 className="text-xl font-bold text-gray-900">Install NEXA POS App</h3>
+                  <img
+                    src="/logo.png"
+                    alt="NEXA POS Logo"
+                    className="h-8 w-auto border rounded-xl"
+                  />
+                  <h3 className="text-xl font-bold text-gray-900">
+                    Install NEXA POS App
+                  </h3>
                 </div>
-                <button onClick={() => setShowInstallModal(false)} className="p-2 text-gray-400 hover:text-gray-600 rounded-full transition-colors">
+                <button
+                  onClick={() => setShowInstallModal(false)}
+                  className="p-2 text-gray-400 hover:text-gray-600 rounded-full transition-colors"
+                >
                   <X size={20} />
                 </button>
               </div>
-              
+
               <div className="p-6 text-sm text-gray-600 space-y-4">
-                <p>NEXA POS is a Progressive Web App (PWA). You can install it directly to your device for offline use without going through an app store.</p>
+                <p>
+                  NEXA POS is a Progressive Web App (PWA). You can install it
+                  directly to your device for offline use without going through
+                  an app store.
+                </p>
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                  <strong className="text-gray-900 block mb-2">On iOS (Safari):</strong>
+                  <strong className="text-gray-900 block mb-2">
+                    On iOS (Safari):
+                  </strong>
                   <ol className="list-decimal pl-5 space-y-1">
-                    <li>Tap the <strong>Share</strong> button.</li>
-                    <li>Tap <strong>Add to Home Screen</strong>.</li>
+                    <li>
+                      Tap the <strong>Share</strong> button.
+                    </li>
+                    <li>
+                      Tap <strong>Add to Home Screen</strong>.
+                    </li>
                   </ol>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                  <strong className="text-gray-900 block mb-2">On Desktop (Chrome/Edge):</strong>
+                  <strong className="text-gray-900 block mb-2">
+                    On Desktop (Chrome/Edge):
+                  </strong>
                   <ol className="list-decimal pl-5 space-y-1">
-                    <li>Click the <strong>Install</strong> icon in the address bar.</li>
-                    <li>Or click the 3-dots menu and select <strong>Install NEXA POS</strong>.</li>
+                    <li>
+                      Click the <strong>Install</strong> icon in the address
+                      bar.
+                    </li>
+                    <li>
+                      Or click the 3-dots menu and select{" "}
+                      <strong>Install NEXA POS</strong>.
+                    </li>
                   </ol>
                 </div>
               </div>

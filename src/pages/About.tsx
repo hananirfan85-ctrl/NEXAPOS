@@ -3,11 +3,12 @@ import { ArrowLeft, User, GraduationCap, Code } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SEO } from "../components/SEO";
 
+
 export default function About() {
   return (
     <div className="min-h-screen bg-[#030305] text-white selection:bg-indigo-500/30">
-      <SEO 
-        title="About NEXA POS | Founder Hanan Irfan" 
+      <SEO
+        title="About NEXA POS | Founder Hanan Irfan"
         description="Learn about the origins of NEXA POS and its founder, Hanan Irfan. A modern cloud-based POS and retail management system."
         keywords="about nexa pos, hanan irfan, developer, pos system founder, saas founder pakistan"
       />
@@ -97,11 +98,11 @@ export default function About() {
                 </div>
                 <div className="md:w-1/3 flex justify-center shrink-0">
                   <div className="relative w-48 h-48 lg:w-64 lg:h-64 rounded-full overflow-hidden border-2 border-indigo-500/20 shadow-[0_0_50px_-10px_rgba(99,102,241,0.5)]">
-                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-purple-800 flex items-center justify-center">
-                      <span className="text-6xl lg:text-8xl font-display font-bold text-white/50">
-                        <img src="https://pbs.twimg.com/profile_images/2022622427378020352/xOqGLbdb.jpg"alt="hanan irfan founder of nexa pos system" style="width=100%;height=100%;"></img>
-                      </span>
-                    </div>
+                    <img 
+                      src="https://pbs.twimg.com/profile_images/2022622427378020352/xOqGLbdb.jpg" 
+                      alt="Hanan Irfan" 
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 </div>
               </div>
