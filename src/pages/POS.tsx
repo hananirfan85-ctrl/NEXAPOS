@@ -62,9 +62,22 @@ export default function POS() {
   }, [user]);
 
   const fetchProducts = async () => {
+    const cached = localStorage.getItem("offline_products");
+    if (cached) {
+      try {
+        const parsed = JSON.parse(cached);
+        setProducts(parsed);
+        const cats = Array.from(new Set(parsed.map((d: any) => d.category)));
+        setCategories(["All", ...cats as string[]]);
+      } catch (e) {}
+    }
+
+    if (!navigator.onLine) return; // Do not fetch from cloud if offline
+
     const { data } = await supabase.from("products").select("*").order("name");
     if (data) {
       setProducts(data);
+      localStorage.setItem("offline_products", JSON.stringify(data));
       const cats = Array.from(new Set(data.map((d) => d.category)));
       setCategories(["All", ...cats]);
     }
@@ -120,7 +133,6 @@ export default function POS() {
     const receivedAmount = parseFloat(cashReceived) || cartTotal;
     const changeAmount = receivedAmount - cartTotal;
 
-    // Call Supabase RPC
     const itemsJson = cart.map((item) => ({
       product_id: item.id,
       quantity: item.cartQuantity,
@@ -130,6 +142,42 @@ export default function POS() {
       total_profit: (item.selling_price - item.cost_price) * item.cartQuantity,
     }));
 
+    if (!navigator.onLine) {
+       // Offline Mode
+       const queue = JSON.parse(localStorage.getItem("offline_sales_queue") || "[]");
+       queue.push({
+           p_user_id: user.id,
+           p_total_amount: cartTotal,
+           p_total_profit: cartProfit,
+           p_items: itemsJson,
+           created_at: new Date().toISOString()
+       });
+       localStorage.setItem("offline_sales_queue", JSON.stringify(queue));
+       
+       // Deduct stock locally
+       const currentProducts = products.map(p => {
+           const inCart = itemsJson.find(i => i.product_id === p.id);
+           if (inCart) return { ...p, stock: p.stock - inCart.quantity };
+           return p;
+       });
+       setProducts(currentProducts);
+       localStorage.setItem("offline_products", JSON.stringify(currentProducts));
+
+       setCompletedSale({
+         id: "offline-" + Date.now(),
+         amount: cartTotal,
+         items: [...cart],
+         cashReceived: receivedAmount,
+         change: changeAmount,
+       });
+       setShowReceipt(true);
+       setShowPaymentModal(false);
+       setCart([]);
+       setProcessing(false);
+       return;
+    }
+
+    // Call Supabase RPC
     const { data: saleId, error } = await supabase.rpc("process_sale", {
       p_user_id: user.id,
       p_total_amount: cartTotal,

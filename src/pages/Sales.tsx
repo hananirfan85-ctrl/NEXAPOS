@@ -18,12 +18,44 @@ export default function Sales() {
 
   const fetchSales = async () => {
     setLoading(true);
+    let offlineSales: any[] = [];
+    try {
+        const cached = localStorage.getItem("offline_sales");
+        if (cached) {
+            setSales(JSON.parse(cached));
+        }
+        const queued = localStorage.getItem("offline_sales_queue");
+        if (queued) {
+            offlineSales = JSON.parse(queued).map((q: any) => ({
+                id: q.created_at, // rough ID spoof
+                total_amount: q.p_total_amount,
+                total_profit: q.p_total_profit,
+                created_at: q.created_at,
+                is_offline: true,
+                items: q.p_items
+            }));
+        }
+    } catch(e) {}
+
+    if (!navigator.onLine) {
+        setLoading(false);
+        // Prepend offline sales 
+        setSales(prev => {
+           const dbSales = prev.filter(s => !(s as any).is_offline);
+           return [...offlineSales, ...dbSales];
+        });
+        return;
+    }
+
     const { data } = await supabase
       .from("sales")
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (data) setSales(data);
+    if (data) {
+        localStorage.setItem("offline_sales", JSON.stringify(data));
+        setSales([...offlineSales, ...data]);
+    }
     setLoading(false);
   };
 
@@ -32,6 +64,14 @@ export default function Sales() {
       setSelectedSaleId(null);
       return;
     }
+    // Check if it's an offline sale
+    const offlineItem = sales.find(s => s.id === saleId && (s as any).is_offline);
+    if (offlineItem) {
+       setSaleItems((offlineItem as any).items || []);
+       setSelectedSaleId(saleId);
+       return;
+    }
+
     const { data } = await supabase
       .from("sale_items")
       .select("*, product:products(name)")
@@ -51,6 +91,11 @@ export default function Sales() {
       )
     )
       return;
+    
+    if (!navigator.onLine) {
+       alert("Cannot delete records while offline.");
+       return;
+    }
 
     // Deleting the sale will cascade delete sale_items automatically in Supabase due to ON DELETE CASCADE
     await supabase.from("sales").delete().eq("id", saleId);

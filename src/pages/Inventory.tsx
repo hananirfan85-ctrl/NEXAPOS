@@ -3,6 +3,7 @@ import { supabase, Product } from "../lib/supabase";
 import { useAuth } from "../contexts/AuthContext";
 import { formatCurrency } from "../lib/utils";
 import { Plus, Search, Edit2, Trash2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function Inventory() {
   const { user } = useAuth();
@@ -45,6 +46,19 @@ export default function Inventory() {
 
   const fetchProducts = async () => {
     setLoading(true);
+
+    const cached = localStorage.getItem("offline_products");
+    if (cached) {
+      try {
+        setProducts(JSON.parse(cached));
+      } catch (e) {}
+    }
+
+    if (!navigator.onLine) {
+       setLoading(false);
+       return;
+    }
+
     const { data, error } = await supabase
       .from("products")
       .select("*")
@@ -54,12 +68,14 @@ export default function Inventory() {
       console.error("Error fetching products:", error);
     } else {
       setProducts(data || []);
+      localStorage.setItem("offline_products", JSON.stringify(data || []));
     }
     setLoading(false);
   };
 
   const logActivity = async (action: string, description: string) => {
     if (!user) return;
+    if (!navigator.onLine) return; // Skip logging if offline
     await supabase.from("activity_logs").insert([
       {
         user_id: user.id,
@@ -74,7 +90,42 @@ export default function Inventory() {
     if (!user) return;
     setFormLoad(true);
 
+    if (!navigator.onLine) {
+        if (editingId) {
+            const updatedProducts = products.map(p => 
+                p.id === editingId ? { ...p, ...formData, updated_at: new Date().toISOString() } : p
+            );
+            setProducts(updatedProducts);
+            localStorage.setItem("offline_products", JSON.stringify(updatedProducts));
+            
+            // Queue offline update
+            const queue = JSON.parse(localStorage.getItem("offline_products_queue") || "[]");
+            queue.push({ type: 'update', id: editingId, payload: formData });
+            localStorage.setItem("offline_products_queue", JSON.stringify(queue));
+            toast.success("Updated product locally (Offline mode)");
+        } else {
+            const newProduct = { ...formData, id: `offline-${Date.now()}`, user_id: user.id, created_at: new Date().toISOString() };
+            const updatedProducts = [newProduct, ...products];
+            setProducts(updatedProducts as Product[]);
+            localStorage.setItem("offline_products", JSON.stringify(updatedProducts));
+            
+            // Queue offline insert
+            const queue = JSON.parse(localStorage.getItem("offline_products_queue") || "[]");
+            queue.push({ type: 'insert', payload: newProduct });
+            localStorage.setItem("offline_products_queue", JSON.stringify(queue));
+            toast.success("Added product locally (Offline mode)");
+        }
+        closeModal();
+        setFormLoad(false);
+        return;
+    }
+
     if (editingId) {
+      if (editingId.startsWith('offline-')) {
+          toast.error("Cannot edit a product added offline until it syncs to cloud.");
+          setFormLoad(false);
+          return;
+      }
       const { data, error } = await supabase
         .from("products")
         .update({
@@ -91,7 +142,9 @@ export default function Inventory() {
 
       if (!error && data) {
         logActivity("UPDATE_PRODUCT", `Updated product: ${formData.name}`);
-        setProducts((prev) => prev.map((p) => (p.id === editingId ? data : p)));
+        const updatedProds = products.map((p) => (p.id === editingId ? data : p));
+        setProducts(updatedProds);
+        localStorage.setItem("offline_products", JSON.stringify(updatedProds));
         closeModal();
       }
     } else {
@@ -108,7 +161,9 @@ export default function Inventory() {
 
       if (!error && data) {
         logActivity("ADD_PRODUCT", `Added new product: ${formData.name}`);
-        setProducts((prev) => [data, ...prev]);
+        const newProds = [data, ...products];
+        setProducts(newProds);
+        localStorage.setItem("offline_products", JSON.stringify(newProds));
         closeModal();
       }
     }

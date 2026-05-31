@@ -70,13 +70,28 @@ export default function Customers() {
     const { data: userData } = await supabase.auth.getUser();
     if (!userData.user) return;
 
+    const cached = localStorage.getItem("offline_customers");
+    if (cached) {
+      try {
+        setCustomers(JSON.parse(cached));
+      } catch(e) {}
+    }
+
+    if (!navigator.onLine) {
+       setLoading(false);
+       return;
+    }
+
     // Using simple RLS queries
     const { data } = await supabase
       .from("customers")
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (data) setCustomers(data);
+    if (data) {
+       setCustomers(data);
+       localStorage.setItem("offline_customers", JSON.stringify(data));
+    }
     setLoading(false);
   };
 
@@ -86,7 +101,46 @@ export default function Customers() {
     if (!userData.user) return;
 
     try {
+      if (!navigator.onLine) {
+          if (editingCustomer) {
+             const updated = customers.map(c => 
+                c.id === editingCustomer.id ? { ...c, ...newCustomer } : c
+             );
+             setCustomers(updated);
+             localStorage.setItem("offline_customers", JSON.stringify(updated));
+             const queue = JSON.parse(localStorage.getItem("offline_customers_queue") || "[]");
+             queue.push({ type: 'update', id: editingCustomer.id, payload: newCustomer });
+             localStorage.setItem("offline_customers_queue", JSON.stringify(queue));
+             toast.success("Customer updated locally (Offline)");
+          } else {
+             const newCust = { 
+                id: `offline-${Date.now()}`,
+                user_id: userData.user.id,
+                ...newCustomer,
+                loyalty_points: 0,
+                total_purchases: 0,
+                ledger_balance: 0,
+                created_at: new Date().toISOString()
+             };
+             const updated = [newCust, ...customers];
+             setCustomers(updated as Customer[]);
+             localStorage.setItem("offline_customers", JSON.stringify(updated));
+             const queue = JSON.parse(localStorage.getItem("offline_customers_queue") || "[]");
+             queue.push({ type: 'insert', payload: newCust });
+             localStorage.setItem("offline_customers_queue", JSON.stringify(queue));
+             toast.success("Customer added locally (Offline)");
+          }
+          setShowAddModal(false);
+          setEditingCustomer(null);
+          setNewCustomer({ name: "", email: "", phone: "", address: "" });
+          return;
+      }
+
       if (editingCustomer) {
+        if (editingCustomer.id.startsWith('offline-')) {
+            toast.error("Cannot edit offline record until it syncs");
+            return;
+        }
         const { data, error } = await supabase
           .from("customers")
           .update({
@@ -100,9 +154,9 @@ export default function Customers() {
           .single();
         if (error) throw error;
         toast.success("Customer updated");
-        setCustomers((prev) =>
-          prev.map((c) => (c.id === editingCustomer.id ? data : c)),
-        );
+        const updated = customers.map((c) => (c.id === editingCustomer.id ? data : c));
+        setCustomers(updated);
+        localStorage.setItem("offline_customers", JSON.stringify(updated));
       } else {
         const { data, error } = await supabase
           .from("customers")
@@ -116,7 +170,9 @@ export default function Customers() {
           .single();
         if (error) throw error;
         toast.success("Customer added");
-        setCustomers((prev) => [data, ...prev]);
+        const updated = [data, ...customers];
+        setCustomers(updated);
+        localStorage.setItem("offline_customers", JSON.stringify(updated));
       }
 
       setShowAddModal(false);

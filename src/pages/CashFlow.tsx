@@ -36,6 +36,18 @@ export default function CashFlows() {
 
   const fetchCashFlows = async () => {
     try {
+      const cached = localStorage.getItem("offline_cashflows");
+      if (cached) {
+        try {
+           setCashFlows(JSON.parse(cached));
+        } catch(e) {}
+      }
+
+      if (!navigator.onLine) {
+         setLoading(false);
+         return;
+      }
+
       const { data, error } = await supabase
         .from("cash_flows")
         .select("*")
@@ -43,6 +55,7 @@ export default function CashFlows() {
 
       if (error) throw error;
       setCashFlows(data || []);
+      localStorage.setItem("offline_cashflows", JSON.stringify(data || []));
     } catch (error: any) {
       console.error("Error fetching cash flows:", error);
       if (error.code === "PGRST205") {
@@ -68,6 +81,32 @@ export default function CashFlows() {
     }
 
     try {
+      if (!navigator.onLine) {
+          const newFlow = {
+             id: `offline-${Date.now()}`,
+             user_id: user.id,
+             date,
+             type,
+             amount: Number(amount),
+             description,
+          };
+          const updatedCashFlows = [newFlow, ...cashFlows].sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+          );
+          setCashFlows(updatedCashFlows as any);
+          localStorage.setItem("offline_cashflows", JSON.stringify(updatedCashFlows));
+
+          const queue = JSON.parse(localStorage.getItem("offline_cashflow_queue") || "[]");
+          queue.push({ type: 'insert', payload: newFlow });
+          localStorage.setItem("offline_cashflow_queue", JSON.stringify(queue));
+          
+          toast.success("Record added locally (Offline mode)");
+          setIsModalOpen(false);
+          setAmount("");
+          setDescription("");
+          return;
+      }
+
       const { data, error } = await supabase
         .from("cash_flows")
         .insert([
@@ -84,11 +123,12 @@ export default function CashFlows() {
 
       if (error) throw error;
       toast.success("Record added successfully");
-      setCashFlows((prev) =>
-        [data, ...prev].sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-        ),
+      const updatedFlows = [data, ...cashFlows].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
       );
+      setCashFlows(updatedFlows);
+      localStorage.setItem("offline_cashflows", JSON.stringify(updatedFlows));
+      
       setIsModalOpen(false);
       setAmount("");
       setDescription("");
