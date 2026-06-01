@@ -1,6 +1,30 @@
 {
-  "name": "NEXA POS",
-  "description": "NEXA POS- A modern Shop Management System with Inventory, POS Billing, Sales, Profit Tracking, and Reports.",
+  "name": "NEXA POS - Smart Billing & Inventory System",
+  "short_name": "NEXA POS",
+  "description": "NEXA POS is a modern POS and shop management system for retail stores, grocery shops, pharmacies, and restaurants. It includes billing, inventory management, sales tracking, profit reports, and analytics to help businesses grow efficiently.",
+  "keywords": "POS software Pakistan, POS system Pakistan, best POS software in Pakistan, POS software for small business Pakistan, retail POS software Pakistan, grocery store POS system Pakistan, restaurant POS software Pakistan, cafe POS system Pakistan, pharmacy POS software Pakistan, clothing store POS system Pakistan, shop billing software Pakistan, inventory management software Pakistan, POS billing system Pakistan, cloud POS software Pakistan, POS software Lahore, POS software Karachi, POS software Islamabad, POS software near me, affordable POS software Pakistan, digital billing software Pakistan, supermarket POS system Pakistan, retail billing software Pakistan, business POS system Pakistan, shop management system Pakistan, point of sale system Pakistan, POS software for retailers, best retail software Pakistan, POS software with inventory, billing and POS system Pakistan, smart POS system Pakistan",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/public/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/public/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": [
+    "Billing System",
+    "Inventory Management",
+    "Sales Tracking",
+    "Profit Reports",
+    "Multi-store Support"
+  ]
 }
